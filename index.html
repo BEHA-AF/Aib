@@ -1,0 +1,63 @@
+```html
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI ക്രിയേറ്റീവ് സ്റ്റുഡിയോ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <header class="gradient-bg text-white p-6 text-center shadow-lg">
+        <h1 class="text-3xl font-bold">AI ക്രിയേറ്റീവ് സ്റ്റുഡിയോ</h1>
+        <p class="mt-2 text-sm">ഫോട്ടോകളും വീഡിയോകളും എളുപ്പത്തിൽ നിർമ്മിക്കൂ</p>
+    </header>
+
+    <main class="max-w-4xl mx-auto p-6">
+        <!-- Tab Navigation -->
+        <div class="flex space-x-4 mb-6 border-b pb-2">
+            <button onclick="showTab('photo-to-video')" class="py-2 px-4 bg-purple-600 text-white rounded-lg">ഫോട്ടോയിൽ നിന്ന് വീഡിയോ</button>
+            <button onclick="showTab('text-to-media')" class="py-2 px-4 bg-gray-300 text-gray-700 rounded-lg">പ്രോംപ്റ്റിൽ നിന്ന് മീഡിയ</button>
+        </div>
+
+        <!-- Content Area -->
+        <div id="content" class="bg-white p-8 rounded-xl shadow-md">
+            <div id="photo-to-video">
+                <h2 class="text-xl font-semibold mb-4">ഫോട്ടോ അപ്‌ലോഡ് ചെയ്ത് വീഡിയോ ആക്കുക</h2>
+                <input type="file" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100" />
+                <button class="mt-4 bg-purple-600 text-white py-2 px-6 rounded-lg w-full">വീഡിയോ നിർമ്മിക്കുക</button>
+            </div>
+
+            <div id="text-to-media" class="hidden">
+                <h2 class="text-xl font-semibold mb-4">നിങ്ങളുടെ ആശയം പ്രോംപ്റ്റ് വഴി നൽകുക</h2>
+                <textarea class="w-full h-32 p-3 border rounded-lg" placeholder="ഉദാഹരണത്തിന്: മനോഹരമായ ഒരു പർവതനിരയുടെ ചിത്രം..."></textarea>
+                <div class="mt-4 flex space-x-2">
+                    <button class="bg-blue-600 text-white py-2 px-4 rounded-lg flex-1">ചിത്രം നിർമ്മിക്കുക</button>
+                    <button class="bg-green-600 text-white py-2 px-4 rounded-lg flex-1">വീഡിയോ നിർമ്മിക്കുക</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function showTab(tabId) {
+            document.getElementById('photo-to-video').classList.add('hidden');
+            document.getElementById('text-to-media').classList.add('hidden');
+            document.getElementById(tabId).classList.remove('hidden');
+            
+            // Toggle active button style
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(btn => {
+                btn.classList.remove('bg-purple-600', 'text-white');
+                btn.classList.add('bg-gray-300', 'text-gray-700');
+            });
+            event.target.classList.add('bg-purple-600', 'text-white');
+        }
+    </script>
+</body>
+</html>
+
+```
