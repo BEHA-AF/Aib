@@ -1,63 +1,285 @@
-```html
 <!DOCTYPE html>
 <html lang="ml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI ക്രിയേറ്റീവ് സ്റ്റുഡിയോ</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>AI മാജിക് ടൂൾ</title>
     <style>
-        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #a29bfe;
+            --dark: #2d3436;
+            --light: #f5f6fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 { color: var(--primary); }
+
+        /* Tabs Navigation */
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            background: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #777;
+            border-bottom: 3px solid transparent;
+            transition: 0.3s;
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .tab-content.active { display: block; }
+
+        /* Form elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        textarea, input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        button.generate-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+        }
+
+        button.generate-btn:hover { background-color: #5b4cc4; }
+
+        /* Preview Area */
+        .preview-box {
+            margin-top: 30px;
+            border: 2px dashed #ccc;
+            padding: 20px;
+            text-align: center;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fafafa;
+            border-radius: 6px;
+        }
+
+        .preview-box img, .preview-box video {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 4px;
+        }
     </style>
 </head>
-<body class="bg-gray-100 font-sans">
-    <header class="gradient-bg text-white p-6 text-center shadow-lg">
-        <h1 class="text-3xl font-bold">AI ക്രിയേറ്റീവ് സ്റ്റുഡിയോ</h1>
-        <p class="mt-2 text-sm">ഫോട്ടോകളും വീഡിയോകളും എളുപ്പത്തിൽ നിർമ്മിക്കൂ</p>
+<body>
+
+<div class="container">
+    <header>
+        <h1>AI ക്രിയേറ്റീവ് സ്റ്റുഡിയോ 🚀</h1>
+        <p>ഫോട്ടോ, വീഡിയോ, ഫേസ് സ്വാപ്പ് എന്നിവ ഇനി എളുപ്പത്തിൽ ചെയ്യാം</p>
     </header>
 
-    <main class="max-w-4xl mx-auto p-6">
-        <!-- Tab Navigation -->
-        <div class="flex space-x-4 mb-6 border-b pb-2">
-            <button onclick="showTab('photo-to-video')" class="py-2 px-4 bg-purple-600 text-white rounded-lg">ഫോട്ടോയിൽ നിന്ന് വീഡിയോ</button>
-            <button onclick="showTab('text-to-media')" class="py-2 px-4 bg-gray-300 text-gray-700 rounded-lg">പ്രോംപ്റ്റിൽ നിന്ന് മീഡിയ</button>
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab(event, 'text-to-image')">Text to Image</button>
+        <button class="tab-btn" onclick="openTab(event, 'text-to-video')">Text to Video</button>
+        <button class="tab-btn" onclick="openTab(event, 'image-to-video')">Image to Video</button>
+        <button class="tab-btn" onclick="openTab(event, 'face-swap')">Face Swap</button>
+    </div>
+
+    <div id="text-to-image" class="tab-content active">
+        <h2>പ്രോംപ്റ്റിൽ നിന്നും ഫോട്ടോ നിർമ്മിക്കുക</h2>
+        <div class="form-group">
+            <label>നിങ്ങൾക്ക് ആവശ്യമുള്ള ഫോട്ടോ വിവരിക്കുക (Prompt):</label>
+            <textarea id="image-prompt" rows="3" placeholder="ഉദാഹരണത്തിന്: A futuristic city with flying cars, cinematic lighting..."></textarea>
         </div>
+        <button class="generate-btn" onclick="generateImage()">ഫോട്ടോ നിർമ്മിക്കുക</button>
+        <div class="preview-box" id="image-preview">നിങ്ങൾ നിർമ്മിക്കുന്ന ഫോട്ടോ ഇവിടെ കാണാം...</div>
+    </div>
 
-        <!-- Content Area -->
-        <div id="content" class="bg-white p-8 rounded-xl shadow-md">
-            <div id="photo-to-video">
-                <h2 class="text-xl font-semibold mb-4">ഫോട്ടോ അപ്‌ലോഡ് ചെയ്ത് വീഡിയോ ആക്കുക</h2>
-                <input type="file" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100" />
-                <button class="mt-4 bg-purple-600 text-white py-2 px-6 rounded-lg w-full">വീഡിയോ നിർമ്മിക്കുക</button>
-            </div>
-
-            <div id="text-to-media" class="hidden">
-                <h2 class="text-xl font-semibold mb-4">നിങ്ങളുടെ ആശയം പ്രോംപ്റ്റ് വഴി നൽകുക</h2>
-                <textarea class="w-full h-32 p-3 border rounded-lg" placeholder="ഉദാഹരണത്തിന്: മനോഹരമായ ഒരു പർവതനിരയുടെ ചിത്രം..."></textarea>
-                <div class="mt-4 flex space-x-2">
-                    <button class="bg-blue-600 text-white py-2 px-4 rounded-lg flex-1">ചിത്രം നിർമ്മിക്കുക</button>
-                    <button class="bg-green-600 text-white py-2 px-4 rounded-lg flex-1">വീഡിയോ നിർമ്മിക്കുക</button>
-                </div>
-            </div>
+    <div id="text-to-video" class="tab-content">
+        <h2>പ്രോംപ്റ്റിൽ നിന്നും വീഡിയോ നിർമ്മിക്കുക</h2>
+        <div class="form-group">
+            <label>നിങ്ങൾക്ക് ആവശ്യമുള്ള വീഡിയോ വിവരിക്കുക (Prompt):</label>
+            <textarea id="video-prompt" rows="3" placeholder="ഉദാഹരണത്തിന്: Beautiful waterfall in a tropical forest, slow motion..."></textarea>
         </div>
-    </main>
+        <button class="generate-btn" onclick="generateVideo()">വീഡിയോ നിർമ്മിക്കുക</button>
+        <div class="preview-box" id="video-preview">നിങ്ങൾ നിർമ്മിക്കുന്ന വീഡിയോ ഇവിടെ കാണാം...</div>
+    </div>
 
-    <script>
-        function showTab(tabId) {
-            document.getElementById('photo-to-video').classList.add('hidden');
-            document.getElementById('text-to-media').classList.add('hidden');
-            document.getElementById(tabId).classList.remove('hidden');
-            
-            // Toggle active button style
-            const buttons = document.querySelectorAll('button');
-            buttons.forEach(btn => {
-                btn.classList.remove('bg-purple-600', 'text-white');
-                btn.classList.add('bg-gray-300', 'text-gray-700');
-            });
-            event.target.classList.add('bg-purple-600', 'text-white');
+    <div id="image-to-video" class="tab-content">
+        <h2>ഫോട്ടോയും പ്രോംപ്റ്റും ഉപയോഗിച്ച് വീഡിയോ നിർമ്മിക്കുക</h2>
+        <div class="form-group">
+            <label>ആദ്യമേ ഒരു ഫോട്ടോ അപ്‌ലോഡ് ചെയ്യുക:</label>
+            <input type="file" id="input-img-video" accept="image/*">
+        </div>
+        <div class="form-group">
+            <label>ഈ ഫോട്ടോയ്ക്ക് എന്ത് മാറ്റമാണ് വരുത്തേണ്ടത്? (Prompt):</label>
+            <textarea id="img-video-prompt" rows="3" placeholder="ഉദാഹരണത്തിന്: Make the hair blow in the wind, or make the background move..."></textarea>
+        </div>
+        <button class="generate-btn" onclick="generateImageToVideo()">വീഡിയോ നിർമ്മിക്കുക</button>
+        <div class="preview-box" id="img-to-video-preview">നിങ്ങൾ നിർമ്മിക്കുന്ന വീഡിയോ ഇവിടെ കാണാം...</div>
+    </div>
+
+    <div id="face-swap" class="tab-content">
+        <h2>ഫേസ് സ്വാപ്പ് (Face Swap) ടൂൾ</h2>
+        <div class="form-group">
+            <label>പ്രധാന ഫോട്ടോ (ഗ്രൂപ്പ് ഫോട്ടോയോ ഒന്നിൽ കൂടുതൽ ആളുകൾ ഉള്ളതോ ആകാം):</label>
+            <input type="file" id="main-image" accept="image/*" onchange="detectFaces()">
+            <p id="face-count-status" style="color: var(--primary); font-weight: bold; margin-top: 5px;"></p>
+        </div>
+        <div class="form-group">
+            <label>മാറ്റി വെക്കേണ്ട പുതിയ മുഖമുള്ള ഫോട്ടോ:</label>
+            <input type="file" id="swap-image" accept="image/*">
+        </div>
+        <button class="generate-btn" onclick="processFaceSwap()">മുഖം മാറ്റുക (Swap Face)</button>
+        <div class="preview-box" id="swap-preview">മാറ്റം വരുത്തിയ ഫോട്ടോ ഇവിടെ കാണാം...</div>
+    </div>
+</div>
+
+<script>
+    // ടാബുകൾ മാറാനുള്ള ഫങ്ഷൻ
+    function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+            tabcontent[i].classList.remove("active");
         }
-    </script>
+        tablinks = document.getElementsByClassName("tab-btn");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].classList.remove("active");
+        }
+        document.getElementById(tabName).style.display = "block";
+        document.getElementById(tabName).classList.add("active");
+        evt.currentTarget.classList.add("active");
+    }
+
+    // 1. Text to Image Integration
+    function generateImage() {
+        const prompt = document.getElementById('image-prompt').value;
+        const preview = document.getElementById('image-preview');
+        if(!prompt) return alert("ദയവായി ഒരു പ്രോംപ്റ്റ് നൽകുക!");
+        
+        preview.innerHTML = "ഫോട്ടോ തയ്യാറാകുന്നു, ദയവായി കാത്തിരിക്കുക...";
+        
+        // ഇവിടെ നിങ്ങളുടെ AI API (eg: Hugging Face) ബന്ധിപ്പിക്കാം. തൽക്കാലം ഒരു ഡെമോ ഇമേജ് കാണിക്കുന്നു.
+        setTimeout(() => {
+            preview.innerHTML = `<img src="https://picsum.photos/800/500" alt="Generated Image">`;
+        }, 2000);
+    }
+
+    // 2. Text to Video Integration
+    function generateVideo() {
+        const prompt = document.getElementById('video-prompt').value;
+        const preview = document.getElementById('video-preview');
+        if(!prompt) return alert("ദയവായി ഒരു പ്രോംപ്റ്റ് നൽകുക!");
+
+        preview.innerHTML = "വീഡിയോ തയ്യാറാകുന്നു, ദയവായി കാത്തിരിക്കുക...";
+
+        setTimeout(() => {
+            preview.innerHTML = `<video controls autoplay loop src="https://www.w3schools.com/html/mov_bbb.mp4" width="100%"></video>`;
+        }, 3000);
+    }
+
+    // 3. Image to Video Integration
+    function generateImageToVideo() {
+        const file = document.getElementById('input-img-video').files[0];
+        const prompt = document.getElementById('img-video-prompt').value;
+        const preview = document.getElementById('img-to-video-preview');
+
+        if(!file || !prompt) return alert("ദയവായി ഫോട്ടോയും പ്രോംപ്റ്റും നൽകുക!");
+
+        preview.innerHTML = "ഫോട്ടോയിൽ നിന്നും വീഡിയോ നിർമ്മിക്കുന്നു...";
+
+        setTimeout(() => {
+            preview.innerHTML = `<video controls autoplay loop src="https://www.w3schools.com/html/movie.mp4" width="100%"></video>`;
+        }, 3000);
+    }
+
+    // 4. Face Detection & Swap
+    function detectFaces() {
+        const file = document.getElementById('main-image').files[0];
+        const status = document.getElementById('face-count-status');
+        if(!file) return;
+
+        status.innerHTML = "ഫോട്ടോയിലെ ആളുകളെ കണ്ടെത്തുന്നു...";
+        
+        // യഥാർത്ഥത്തിൽ ഇവിടെ face-api.js ഉപയോഗിച്ച് ആളുകളുടെ എണ്ണം കണ്ടെത്താം.
+        // ഡെമോയ്ക്കായി താഴെ ഒരു ഫേക്ക് കൗണ്ട് നൽകുന്നു.
+        setTimeout(() => {
+            status.innerHTML = "🔍 ഈ ഫോട്ടോയിൽ 3 മുഖങ്ങൾ കണ്ടെത്തിയിട്ടുണ്ട്!";
+        }, 1500);
+    }
+
+    function processFaceSwap() {
+        const mainImg = document.getElementById('main-image').files[0];
+        const swapImg = document.getElementById('swap-image').files[0];
+        const preview = document.getElementById('swap-preview');
+
+        if(!mainImg || !swapImg) return alert("ദയവായി രണ്ട് ഫോട്ടോകളും അപ്‌ലോഡ് ചെയ്യുക!");
+
+        preview.innerHTML = "ഫേസ് സ്വാപ്പ് പ്രക്രിയ നടക്കുന്നു...";
+
+        setTimeout(() => {
+            // ഫേസ് സ്വാപ്പ് ചെയ്ത ശേഷമുള്ള റിസൾട്ട് (ഡെമോ)
+            preview.innerHTML = `<img src="https://picsum.photos/800/500?blur=1" alt="Swapped Face">`;
+        }, 3000);
+    }
+</script>
+
 </body>
 </html>
-
-```
