@@ -6,13 +6,34 @@
   
   
 }
-.text{
+.textLogin{
   colour:white;
+  font-size: 24px;
+  
+}
+
+.textUsername{
+  colour:white;
+  font-size: 16px;
+  
+}
+
+.textPassword{
+  colour:white;
+  font-size: 16px;
+  
+}
+
+.textSubmit{
+  colour:white;
+  font-size: 18px;
+  
 }
 
 .forgot{
   text-decoration: none;
   color: white;
+  font-size: 14px;
   
   
 }
