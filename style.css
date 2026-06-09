@@ -1,42 +1,39 @@
-.box{
-  background-color: #28282B;
-  width: fit-content;
-  border: 1px solid #444;
-  padding: 24px;
-  border-radius: 8px;
-  
-  
-  
-}
-.textLogin{
-  color: white;
-  font-size: 24px;
-  margin-bottom: 16px;
-  
+.Nav{
+  border-bottom: 1px #e0e0e0; 
+  height: 80px;
+  padding: 0px 24px;
+  gap: 40px;
 }
 
-.textUsername{
-  colour:white;
-  font-size: 16px;
-  
+.logo{
+  background-color: none;
+  color: orange;
+  font-family: "Fertigo", "Lapis", serif;
+  font-size: 40px;
 }
 
-.textPassword{
-  colour:white;
-  font-size: 16px;
-  
+.Search{
+  background-color: none;
+  color: #28282B;
 }
 
-.textSubmit{
-  colour:white;
-  font-size: 18px;
-  
+.Search input{
+  border-radius: height/2px;
+  height: 40px;
+  width: 350px;
+  padding: 0px 16px;
+  border: 1px solid #ccc
 }
 
-.forgot{
-  text-decoration: none;
-  color: white;
-  font-size: 14px;
-  
-  
+.Icon{
+  gap: 16px;
+}
+
+.Icon button{
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  border: 1px;
+  background-color: #333;
+  cursor: pointer;
 }
