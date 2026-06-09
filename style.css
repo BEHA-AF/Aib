@@ -1,39 +1,66 @@
-.Nav{
-  border-bottom: 1px #e0e0e0; 
-  height: 80px;
-  padding: 0px 24px;
-  gap: 40px;
+.body{
+  position: relative;
+  width: 1440px;
+  height: 1024px;
+  background-color: #F4F7F6;
+  
+}
+.hero{
+  position: absolute;
+  width: 1440px;
+  height: 530px;
+  left: 0px;
+  top: 0px;
+  background-image: url(iStock-471926619-1-e1535107607184.jpg), linear-gradient(90deg, #0F2027 0%, #203A43 100%);
+  border-radius: 0px 0px 24px 24px;
+  
 }
 
-.logo{
-  background-color: none;
-  color: orange;
-  font-family: "Fertigo", "Lapis", serif;
-  font-size: 40px;
+.para1{
+  position: absolute;
+  width: 520px;
+  height: 19px;
+  left: 160px;
+  top: 288px;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 19px;
+  color: #E0E0E0;
+  
 }
 
-.Search{
-  background-color: none;
-  color: #28282B;
+.para2{
+  position: absolute;
+  width: 507px;
+  height: 44px;
+  left: 160px;
+  top: calc(50% - 44px/2 - 7px);
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 44px;
+  color: #FFFFFF;
+
+  
 }
 
-.Search input{
-  border-radius: height/2px;
-  height: 40px;
-  width: 350px;
-  padding: 0px 16px;
-  border: 1px solid #ccc
-}
-
-.Icon{
-  gap: 16px;
-}
-
-.Icon button{
-  height: 40px;
-  width: 40px;
-  border-radius: 50%;
-  border: 1px;
-  background-color: #333;
-  cursor: pointer;
+.herobutton{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  gap: 10px;
+  position: absolute;
+  width: 180px;
+  height: 48px;
+  left: 160px;
+  top: 330px;
+  background: #FF6B00;
+  box-shadow: 0px 4px 12px rgba(255, 107, 0, 0.4);
+  border-radius: 24px;
+  
 }
