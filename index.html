@@ -1,3309 +1,2200 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0,
+      maximum-scale=1.0,user-scalable=no">
+
+<meta name="theme-color" content="#0B0B0D">
+
+<title>DARE — Party Game</title>
+
+<style>
+
+/* =========================================================
+   CORE
+========================================================= */
+
+:root {
+    --bg: #0a0a0c;
+    --surface: #121216;
+    --surface-2: #19191f;
+    --surface-3: #222229;
+
+    --text: #f5f5f7;
+    --muted: #85858e;
+
+    --accent: #ffffff;
+    --line: rgba(255,255,255,.09);
+
+    --radius-xl: 30px;
+    --radius-lg: 22px;
+    --radius-md: 16px;
+
+    --ease: cubic-bezier(.22,1,.36,1);
+}
+
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    overflow: hidden;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+button {
+    border: 0;
+    cursor: pointer;
+    color: inherit;
+}
+
+/* =========================================================
+   APP
+========================================================= */
+
+.app {
+    width: 100%;
+    height: 100dvh;
+    position: relative;
+    overflow: hidden;
+    background:
+        radial-gradient(
+            circle at 50% -20%,
+            rgba(255,255,255,.075),
+            transparent 45%
+        ),
+        var(--bg);
+}
+
+.screen {
+    position: absolute;
+    inset: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transform: translateY(18px) scale(.985);
+
+    transition:
+        opacity .45s var(--ease),
+        transform .55s var(--ease),
+        visibility .45s;
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1, viewport-fit=cover"
-    >
+    overflow: hidden;
+}
 
-    <meta name="theme-color" content="#0F172A">
+.screen.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+/* =========================================================
+   SPLASH
+========================================================= */
+
+#splash {
+    align-items: center;
+    justify-content: center;
+}
 
-    <title>Truth or Dare - Compass Edition</title>
+.logo {
+    text-align: center;
+}
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+.logo-mark {
+    width: 64px;
+    height: 64px;
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap"
-        rel="stylesheet"
-    >
+    margin: 0 auto 24px;
 
-    <style>
+    border-radius: 20px;
 
-        /* =========================================================
-           ROOT
-        ========================================================= */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #fff;
+    color: #0a0a0c;
+
+    font-size: 28px;
+    font-weight: 900;
 
-        :root {
-            --background: #0F172A;
-            --surface: #1E293B;
-            --surface-dark: #111827;
+    transform: rotate(-8deg);
 
-            --border: #334155;
+    box-shadow:
+        0 20px 60px rgba(255,255,255,.08);
+}
 
-            --primary: #38BDF8;
-            --primary-dark: #0EA5E9;
+.logo h1 {
+    margin: 0;
+
+    font-size: 48px;
+    letter-spacing: -.06em;
+    line-height: .9;
+    font-weight: 900;
+}
 
-            --muted: #64748B;
-            --muted-light: #94A3B8;
+.logo p {
+    margin: 15px 0 0;
+    color: var(--muted);
+    font-size: 13px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+}
 
-            --danger: #EF4444;
+/* =========================================================
+   TOP BAR
+========================================================= */
 
-            --page-padding: clamp(14px, 4vw, 32px);
+.topbar {
+    width: 100%;
+    padding: 22px 22px 10px;
 
-            --content-width: 620px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
-            --control-radius: clamp(12px, 2vw, 18px);
+    flex-shrink: 0;
+}
 
-            --safe-top: env(safe-area-inset-top, 0px);
-            --safe-right: env(safe-area-inset-right, 0px);
-            --safe-bottom: env(safe-area-inset-bottom, 0px);
-            --safe-left: env(safe-area-inset-left, 0px);
-        }
+.brand {
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: -.05em;
+}
 
+.icon-button {
+    width: 44px;
+    height: 44px;
 
-        /* =========================================================
-           GLOBAL
-        ========================================================= */
+    border-radius: 50%;
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-        html {
-            min-width: 320px;
-            min-height: 100%;
-            background: var(--background);
-        }
+    background: rgba(255,255,255,.06);
+    border: 1px solid var(--line);
 
-        body {
-            width: 100%;
-            min-width: 320px;
-            min-height: 100dvh;
+    transition:
+        transform .25s var(--ease),
+        background .25s;
+}
 
-            padding:
-                max(var(--page-padding), var(--safe-top))
-                max(var(--page-padding), var(--safe-right))
-                max(var(--page-padding), var(--safe-bottom))
-                max(var(--page-padding), var(--safe-left));
+.icon-button:active {
+    transform: scale(.9);
+}
 
-            overflow-x: hidden;
-            overflow-y: auto;
+/* =========================================================
+   HOME
+========================================================= */
 
-            display: flex;
-            justify-content: center;
-            align-items: center;
+.home-content {
+    flex: 1;
 
-            background: var(--background);
-            color: #FFFFFF;
+    display: flex;
+    flex-direction: column;
 
-            font-family:
-                "Orbitron",
-                system-ui,
-                -apple-system,
-                BlinkMacSystemFont,
-                "Segoe UI",
-                Roboto,
-                sans-serif;
-        }
+    padding: 25px 22px 24px;
 
-        button,
-        input {
-            font: inherit;
-        }
+    overflow-y: auto;
+}
 
-        button {
-            -webkit-tap-highlight-color: transparent;
-        }
+.hero {
+    margin-top: auto;
+    margin-bottom: auto;
+}
 
-        button:focus-visible,
-        input:focus-visible {
-            outline: 3px solid rgba(56, 189, 248, 0.7);
-            outline-offset: 3px;
-        }
+.eyebrow {
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+}
 
+.hero-title {
+    margin: 0;
 
-        /* =========================================================
-           SPLASH
-        ========================================================= */
+    font-size: clamp(52px, 15vw, 92px);
+    line-height: .82;
 
-        .splash {
-            position: fixed;
-            inset: 0;
+    letter-spacing: -.075em;
+    font-weight: 900;
+}
 
-            z-index: 999;
+.hero-title span {
+    color: var(--muted);
+}
 
-            display: flex;
-            justify-content: center;
-            align-items: center;
+.hero-description {
+    max-width: 330px;
 
-            padding: var(--page-padding);
+    margin: 27px 0 0;
 
-            background: var(--background);
+    color: #a1a1aa;
+    font-size: 15px;
+    line-height: 1.6;
+}
 
-            transition: opacity 0.5s ease;
-        }
+.primary-button {
+    width: 100%;
+    min-height: 62px;
 
-        .splash h1 {
-            max-width: 90vw;
+    border-radius: 18px;
 
-            color: #FFFFFF;
+    background: #fff;
+    color: #0a0a0c;
 
-            font-size: clamp(28px, 9vw, 64px);
-            font-weight: 900;
+    font-size: 15px;
+    font-weight: 800;
 
-            letter-spacing: clamp(1px, 0.8vw, 5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
 
-            line-height: 1.1;
+    transition:
+        transform .25s var(--ease),
+        box-shadow .25s;
+}
 
-            text-align: center;
-        }
+.primary-button:active {
+    transform: scale(.97);
+}
 
+.primary-button:hover {
+    box-shadow: 0 15px 40px rgba(255,255,255,.1);
+}
 
-        /* =========================================================
-           PERSISTENT HEADER
-        ========================================================= */
+.arrow {
+    font-size: 19px;
+}
 
-        .persistent-header {
-            position: fixed;
+/* =========================================================
+   SETUP
+========================================================= */
 
-            top: max(16px, var(--safe-top));
-            left: max(16px, var(--safe-left));
+.setup-content {
+    flex: 1;
 
-            z-index: 10;
+    padding: 22px;
 
-            display: none;
+    display: flex;
+    flex-direction: column;
 
-            color: #FFFFFF;
+    overflow-y: auto;
+}
 
-            font-size: clamp(9px, 2.5vw, 12px);
-            font-weight: 900;
+.page-title {
+    margin: 10px 0 7px;
 
-            letter-spacing: clamp(1px, 0.5vw, 2px);
-        }
+    font-size: 38px;
+    line-height: .95;
+    letter-spacing: -.06em;
+}
 
+.page-subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.5;
+}
 
-        /* =========================================================
-           MAIN CONTAINER
-        ========================================================= */
+.setup-grid {
+    margin-top: 32px;
 
-        .container {
-            width: min(100%, var(--content-width));
+    display: grid;
+    gap: 12px;
+}
 
-            max-height: calc(100dvh - 32px);
+.setup-card {
+    padding: 20px;
 
-            margin: 0 auto;
+    border-radius: var(--radius-lg);
 
-            padding: clamp(4px, 1vw, 12px);
+    background: rgba(255,255,255,.045);
+    border: 1px solid var(--line);
 
-            overflow-y: auto;
+    transition:
+        background .25s,
+        transform .25s var(--ease);
+}
 
-            scrollbar-width: thin;
+.setup-card:active {
+    transform: scale(.985);
+}
 
-            display: none;
-        }
+.card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-        .screen {
-            width: 100%;
-            display: none;
-        }
+.card-label {
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .14em;
+}
 
-        .screen.active {
-            display: block;
-        }
+.card-value {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -.05em;
+}
 
+.card-description {
+    color: #777780;
+    font-size: 13px;
+    margin-top: 5px;
+}
 
-        /* =========================================================
-           MAIN MENU
-        ========================================================= */
+/* =========================================================
+   RANGE
+========================================================= */
 
-        .menu-title {
-            margin-bottom: clamp(8px, 2vw, 12px);
+.range-wrap {
+    margin-top: 20px;
+}
 
-            text-align: center;
-        }
+input[type="range"] {
+    width: 100%;
+    height: 4px;
 
-        .menu-title h2 {
-            font-size: clamp(20px, 6vw, 30px);
+    appearance: none;
+    background: #303037;
 
-            font-weight: 800;
+    border-radius: 10px;
 
-            letter-spacing: clamp(1px, 0.5vw, 3px);
-        }
+    outline: none;
+}
 
-        .menu-subtitle {
-            margin-bottom: clamp(22px, 6vw, 36px);
+input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
 
-            color: var(--muted);
+    width: 24px;
+    height: 24px;
 
-            font-size: clamp(9px, 2.5vw, 12px);
+    border-radius: 50%;
 
-            letter-spacing: clamp(0.5px, 0.3vw, 1.5px);
+    background: #fff;
 
-            text-align: center;
-        }
+    box-shadow:
+        0 3px 14px rgba(0,0,0,.4);
+}
 
-        .menu-options {
-            display: flex;
-            flex-direction: column;
+.range-labels {
+    margin-top: 10px;
 
-            gap: clamp(9px, 2vw, 14px);
+    display: flex;
+    justify-content: space-between;
 
-            margin-bottom: clamp(18px, 4vw, 28px);
-        }
+    color: #55555d;
+    font-size: 10px;
+}
 
-        .menu-option {
-            width: 100%;
+/* =========================================================
+   DIFFICULTY
+========================================================= */
 
-            min-height: clamp(62px, 16vw, 76px);
+.difficulty-list {
+    margin-top: 18px;
 
-            padding: clamp(12px, 3vw, 18px);
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 8px;
+}
 
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+.difficulty {
+    padding: 14px 12px;
 
-            gap: 12px;
+    border-radius: 13px;
 
-            border: 1px solid rgba(56, 189, 248, 0.12);
+    background: rgba(255,255,255,.035);
+    border: 1px solid var(--line);
 
-            border-radius: var(--control-radius);
+    text-align: left;
 
-            background: rgba(30, 41, 59, 0.55);
+    transition: all .25s var(--ease);
+}
 
-            color: #FFFFFF;
+.difficulty strong {
+    display: block;
 
-            cursor: pointer;
+    font-size: 13px;
+}
 
-            transition:
-                background-color 0.2s ease,
-                border-color 0.2s ease,
-                transform 0.2s ease;
-        }
+.difficulty span {
+    display: block;
 
-        .menu-option:hover {
-            border-color: rgba(56, 189, 248, 0.45);
+    margin-top: 4px;
 
-            background: rgba(30, 41, 59, 0.85);
+    color: var(--muted);
+    font-size: 10px;
+}
 
-            transform: translateY(-1px);
-        }
+.difficulty.selected {
+    background: #fff;
+    color: #09090b;
+    border-color: #fff;
+}
 
-        .menu-option:active {
-            transform: scale(0.99);
-        }
+.difficulty.selected span {
+    color: #606068;
+}
 
-        .menu-option-left {
-            min-width: 0;
+/* =========================================================
+   SETTINGS
+========================================================= */
 
-            display: flex;
-            align-items: center;
+.settings-list {
+    margin-top: 28px;
 
-            gap: clamp(10px, 3vw, 15px);
-        }
+    display: flex;
+    flex-direction: column;
 
-        .menu-option-icon {
-            width: clamp(34px, 10vw, 42px);
-            height: clamp(34px, 10vw, 42px);
+    border-top: 1px solid var(--line);
+}
 
-            flex: 0 0 auto;
+.setting-row {
+    min-height: 68px;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
-            border: 1px solid var(--border);
+    border-bottom: 1px solid var(--line);
+}
 
-            border-radius: clamp(9px, 2vw, 12px);
+.setting-info strong {
+    display: block;
+    font-size: 14px;
+}
 
-            color: var(--primary);
+.setting-info span {
+    display: block;
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 11px;
+}
 
-            font-size: clamp(14px, 4vw, 18px);
-        }
+/* toggle */
 
-        .menu-option-text {
-            min-width: 0;
+.toggle {
+    width: 50px;
+    height: 30px;
 
-            text-align: left;
-        }
+    padding: 3px;
 
-        .menu-option-title {
-            overflow: hidden;
+    border-radius: 30px;
 
-            font-size: clamp(11px, 3vw, 14px);
+    background: #2a2a30;
 
-            font-weight: 700;
+    transition: background .25s;
+}
 
-            letter-spacing: 0.5px;
+.toggle::after {
+    content: "";
 
-            line-height: 1.3;
+    display: block;
 
-            text-overflow: ellipsis;
+    width: 24px;
+    height: 24px;
 
-            white-space: nowrap;
-        }
+    border-radius: 50%;
 
-        .menu-option-value {
-            overflow: hidden;
+    background: #777;
 
-            margin-top: 5px;
+    transition: transform .3s var(--ease), background .25s;
+}
 
-            color: var(--muted);
+.toggle.on {
+    background: #fff;
+}
 
-            font-size: clamp(8px, 2.4vw, 11px);
+.toggle.on::after {
+    background: #0a0a0c;
+    transform: translateX(20px);
+}
 
-            letter-spacing: 0.3px;
+/* =========================================================
+   GAME
+========================================================= */
 
-            line-height: 1.3;
+.game-screen {
+    background:
+        radial-gradient(
+            circle at 50% 20%,
+            rgba(255,255,255,.08),
+            transparent 35%
+        ),
+        var(--bg);
+}
 
-            text-overflow: ellipsis;
+.game-top {
+    padding: 22px;
 
-            white-space: nowrap;
-        }
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
 
-        .menu-arrow {
-            flex: 0 0 auto;
+.turn-label {
+    text-align: center;
+}
 
-            color: var(--muted);
+.turn-label small {
+    display: block;
 
-            font-size: clamp(16px, 5vw, 22px);
-        }
+    color: var(--muted);
 
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: .16em;
+}
 
-        /* =========================================================
-           BUTTONS
-        ========================================================= */
+.turn-label strong {
+    display: block;
 
-        .btn {
-            width: 100%;
+    margin-top: 3px;
 
-            min-height: clamp(52px, 14vw, 68px);
+    font-size: 14px;
+}
 
-            padding: clamp(13px, 3vw, 18px);
+/* =========================================================
+   SPINNER
+========================================================= */
 
-            border: 0;
+.spinner-area {
+    flex: 1;
 
-            border-radius: var(--control-radius);
+    display: flex;
+    flex-direction: column;
 
-            font-size: clamp(14px, 4vw, 18px);
+    align-items: center;
+    justify-content: center;
 
-            font-weight: 800;
+    padding: 10px 22px;
+}
 
-            letter-spacing: clamp(0.3px, 0.2vw, 1px);
+.wheel {
+    width: min(74vw, 330px);
+    aspect-ratio: 1;
 
-            line-height: 1.2;
+    position: relative;
 
-            cursor: pointer;
+    border-radius: 50%;
 
-            transition:
-                background-color 0.2s ease,
-                transform 0.1s ease;
-        }
+    background:
+        conic-gradient(
+            #f5f5f5 0deg 120deg,
+            #25252b 120deg 240deg,
+            #74747b 240deg 360deg
+        );
 
-        .btn:active {
-            transform: scale(0.98);
-        }
+    box-shadow:
+        0 30px 100px rgba(0,0,0,.55),
+        inset 0 0 0 12px #111115,
+        inset 0 0 0 13px rgba(255,255,255,.08);
 
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
+    transition:
+        transform 2.8s cubic-bezier(.12,.78,.12,1);
+}
 
-        .btn-primary {
-            background: var(--primary);
-            color: #000000;
-        }
+.wheel::before {
+    content: "";
 
-        .btn-primary:hover {
-            background: var(--primary-dark);
-        }
+    position: absolute;
+    inset: 18px;
 
+    border-radius: 50%;
 
-        /* =========================================================
-           INNER SETTINGS PAGES
-        ========================================================= */
+    border: 1px solid rgba(255,255,255,.16);
+}
 
-        .subpage-header {
-            min-height: 42px;
+.wheel-center {
+    position: absolute;
+    inset: 50% auto auto 50%;
 
-            margin-bottom: clamp(22px, 6vw, 34px);
+    width: 72px;
+    height: 72px;
 
-            display: flex;
-            align-items: center;
+    transform: translate(-50%,-50%);
 
-            gap: 10px;
-        }
+    border-radius: 50%;
 
-        .back-btn {
-            min-width: 70px;
-            min-height: 40px;
+    background: #0a0a0c;
 
-            padding: 8px 0;
+    border: 5px solid #fff;
 
-            border: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-            background: transparent;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: .08em;
+}
 
-            color: var(--primary);
+.pointer {
+    position: absolute;
 
-            font-size: clamp(10px, 3vw, 14px);
+    top: -10px;
+    left: 50%;
 
-            font-weight: 700;
+    transform: translateX(-50%);
 
-            letter-spacing: 0.5px;
+    width: 0;
+    height: 0;
 
-            cursor: pointer;
-        }
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-top: 24px solid #fff;
 
-        .subpage-title {
-            flex: 1;
+    z-index: 3;
 
-            padding-right: 70px;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,.4));
+}
 
-            font-size: clamp(17px, 5vw, 23px);
+.wheel-text {
+    position: absolute;
+    inset: 0;
 
-            font-weight: 800;
+    pointer-events: none;
+}
 
-            letter-spacing: clamp(0.5px, 0.3vw, 1.5px);
+.wheel-text span {
+    position: absolute;
 
-            text-align: center;
-        }
+    font-size: 17px;
+    font-weight: 900;
 
-        .section-label {
-            margin-bottom: clamp(9px, 3vw, 14px);
+    letter-spacing: -.04em;
+}
 
-            color: var(--muted);
+.wheel-text .truth {
+    top: 28%;
+    left: 18%;
 
-            font-size: clamp(8px, 2.5vw, 11px);
+    color: #0a0a0c;
 
-            font-weight: 700;
+    transform: rotate(-28deg);
+}
 
-            letter-spacing: clamp(1px, 0.5vw, 2px);
-        }
+.wheel-text .dare {
+    top: 28%;
+    right: 18%;
 
+    color: #fff;
 
-        /* =========================================================
-           PEOPLE / SLIDER
-        ========================================================= */
+    transform: rotate(28deg);
+}
 
-        .slider-container {
-            width: 100%;
+.wheel-text .random {
+    bottom: 17%;
+    left: 50%;
 
-            min-height: 56px;
+    color: #fff;
 
-            padding: 12px clamp(16px, 5vw, 28px);
+    transform: translateX(-50%);
+}
 
-            display: flex;
-            align-items: center;
+/* =========================================================
+   SPIN BUTTON
+========================================================= */
 
-            gap: 14px;
+.spin-button {
+    width: min(100%, 360px);
+    height: 64px;
 
-            border: 1px solid rgba(56, 189, 248, 0.2);
+    margin-top: 30px;
 
-            border-radius: 100px;
+    border-radius: 19px;
 
-            background: rgba(15, 23, 42, 0.6);
+    background: #fff;
+    color: #08080a;
 
-            box-shadow:
-                inset 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
+    font-weight: 900;
+    font-size: 15px;
 
-        input[type="range"] {
-            width: 100%;
+    letter-spacing: .02em;
 
-            min-width: 0;
+    transition:
+        transform .2s var(--ease);
+}
 
-            height: 6px;
+.spin-button:active {
+    transform: scale(.96);
+}
 
-            appearance: none;
-            -webkit-appearance: none;
+.spin-button:disabled {
+    opacity: .5;
+}
 
-            border-radius: 3px;
+/* =========================================================
+   CARD REVEAL
+========================================================= */
 
-            outline: none;
+.reveal-content {
+    flex: 1;
 
-            background: #1E293B;
-        }
+    padding: 22px;
 
-        input[type="range"]::-webkit-slider-thumb {
-            width: 20px;
-            height: 20px;
+    display: flex;
+    flex-direction: column;
 
-            appearance: none;
-            -webkit-appearance: none;
+    justify-content: center;
+}
 
-            border: 3px solid var(--background);
+.prompt-type {
+    color: var(--muted);
 
-            border-radius: 50%;
+    font-size: 11px;
+    font-weight: 800;
 
-            background: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: .2em;
+}
 
-            box-shadow:
-                0 0 0 2px var(--primary);
+.prompt-card {
+    margin-top: 16px;
 
-            cursor: pointer;
-        }
+    padding: 30px 25px;
 
-        input[type="range"]::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
+    min-height: 330px;
 
-            border: 3px solid var(--background);
+    border-radius: 28px;
 
-            border-radius: 50%;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.095),
+            rgba(255,255,255,.025)
+        );
 
-            background: var(--primary);
+    border: 1px solid var(--line);
 
-            box-shadow:
-                0 0 0 2px var(--primary);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 
-            cursor: pointer;
-        }
+    box-shadow:
+        0 25px 80px rgba(0,0,0,.35);
+}
 
-        input[type="range"]::-moz-range-track {
-            height: 6px;
+.prompt-card h2 {
+    margin: 0;
 
-            border-radius: 3px;
+    font-size: clamp(30px, 8vw, 46px);
 
-            background: #1E293B;
-        }
+    line-height: 1.02;
 
-        .player-count-info {
-            margin: clamp(20px, 6vw, 32px) 0;
+    letter-spacing: -.055em;
+}
 
-            text-align: center;
-        }
+.prompt-number {
+    color: #5f5f67;
 
-        .player-count-info strong {
-            display: block;
+    font-size: 10px;
+    font-weight: 700;
 
-            margin-bottom: 6px;
+    letter-spacing: .15em;
+}
 
-            color: var(--primary);
+.player-name {
+    margin-top: 30px;
 
-            font-size: clamp(25px, 8vw, 34px);
-        }
+    font-size: 14px;
+    color: var(--muted);
+}
 
-        .player-count-info span {
-            color: var(--muted);
+.player-name strong {
+    color: #fff;
+}
 
-            font-size: clamp(8px, 2.5vw, 11px);
+/* =========================================================
+   RESULT ACTIONS
+========================================================= */
 
-            letter-spacing: clamp(1px, 0.5vw, 2px);
-        }
+.action-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 
+    gap: 10px;
 
-        /* =========================================================
-           DIFFICULTY
-        ========================================================= */
+    margin-top: 14px;
+}
 
-        .difficulty-options {
-            display: flex;
-            flex-direction: column;
+.secondary-button {
+    height: 58px;
 
-            gap: clamp(8px, 2vw, 14px);
+    border-radius: 17px;
 
-            margin-bottom: clamp(22px, 6vw, 32px);
-        }
+    background: rgba(255,255,255,.06);
 
-        .difficulty-option {
-            min-height: 58px;
+    border: 1px solid var(--line);
 
-            padding: clamp(12px, 3vw, 16px);
+    font-size: 13px;
+    font-weight: 800;
 
-            display: flex;
-            align-items: center;
+    transition:
+        transform .2s var(--ease),
+        background .2s;
+}
 
-            gap: 12px;
+.secondary-button:active {
+    transform: scale(.96);
+}
 
-            border-bottom:
-                1px solid rgba(51, 65, 85, 0.55);
+.secondary-button.primary {
+    background: #fff;
+    color: #09090b;
+}
 
-            cursor: pointer;
-        }
+/* =========================================================
+   SMALL DEVICES
+========================================================= */
 
-        .difficulty-option input {
-            width: 18px;
-            height: 18px;
+@media (max-height: 650px) {
 
-            flex: 0 0 auto;
+    .hero-title {
+        font-size: 52px;
+    }
 
-            appearance: none;
-            -webkit-appearance: none;
+    .wheel {
+        width: min(58vh, 270px);
+    }
 
-            border: 2px solid #475569;
+    .spin-button {
+        margin-top: 18px;
+    }
 
-            border-radius: 50%;
+    .prompt-card {
+        min-height: 280px;
+    }
+}
 
-            background: transparent;
+@media (min-width: 700px) {
 
-            position: relative;
-        }
+    .screen {
+        max-width: 480px;
+        left: 50%;
+        right: auto;
+        width: 480px;
 
-        .difficulty-option input:checked {
-            border-color: var(--primary);
-        }
+        transform:
+            translateX(-50%)
+            translateY(18px)
+            scale(.985);
+    }
 
-        .difficulty-option input:checked::after {
-            content: "";
+    .screen.active {
+        transform:
+            translateX(-50%)
+            translateY(0)
+            scale(1);
+    }
 
-            width: 7px;
-            height: 7px;
+    body {
+        background: #050506;
+    }
 
-            position: absolute;
+    .app {
+        max-width: 480px;
+        margin: auto;
 
-            top: 50%;
-            left: 50%;
+        box-shadow:
+            0 0 100px rgba(0,0,0,.5);
+    }
+}
 
-            border-radius: 50%;
-
-            background: var(--primary);
-
-            transform:
-                translate(-50%, -50%);
-        }
-
-        .difficulty-text {
-            min-width: 0;
-        }
-
-        .difficulty-text strong {
-            display: block;
-
-            margin-bottom: 5px;
-
-            font-size: clamp(11px, 3vw, 14px);
-
-            line-height: 1.3;
-        }
-
-        .difficulty-text span {
-            display: block;
-
-            color: var(--muted);
-
-            font-size: clamp(7px, 2.2vw, 10px);
-
-            letter-spacing: 0.2px;
-
-            line-height: 1.4;
-        }
-
-
-        /* =========================================================
-           SETTINGS
-        ========================================================= */
-
-        .settings-list {
-            display: flex;
-            flex-direction: column;
-
-            gap: 4px;
-
-            margin-bottom: clamp(22px, 6vw, 32px);
-        }
-
-        .setting-row {
-            min-height: clamp(58px, 16vw, 70px);
-
-            padding: 10px 2px;
-
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            gap: 18px;
-
-            border-bottom:
-                1px solid rgba(51, 65, 85, 0.5);
-        }
-
-        .setting-name {
-            font-size: clamp(10px, 3vw, 13px);
-
-            font-weight: 600;
-
-            line-height: 1.3;
-        }
-
-        .setting-description {
-            margin-top: 4px;
-
-            color: var(--muted);
-
-            font-size: clamp(7px, 2vw, 9px);
-
-            letter-spacing: 0.2px;
-
-            line-height: 1.3;
-        }
-
-
-        /* =========================================================
-           TOGGLE
-        ========================================================= */
-
-        .toggle {
-            position: relative;
-
-            width: 48px;
-            height: 28px;
-
-            flex: 0 0 auto;
-        }
-
-        .toggle input {
-            position: absolute;
-
-            width: 1px;
-            height: 1px;
-
-            opacity: 0;
-        }
-
-        .toggle-slider {
-            position: absolute;
-
-            inset: 0;
-
-            border-radius: 30px;
-
-            background: #334155;
-
-            cursor: pointer;
-
-            transition:
-                background-color 0.2s ease;
-        }
-
-        .toggle-slider::before {
-            content: "";
-
-            position: absolute;
-
-            top: 4px;
-            left: 4px;
-
-            width: 20px;
-            height: 20px;
-
-            border-radius: 50%;
-
-            background: #94A3B8;
-
-            transition:
-                transform 0.2s ease,
-                background-color 0.2s ease;
-        }
-
-        .toggle input:checked + .toggle-slider {
-            background: var(--primary);
-        }
-
-        .toggle input:checked + .toggle-slider::before {
-            background: var(--background);
-
-            transform: translateX(20px);
-        }
-
-        .toggle input:focus-visible + .toggle-slider {
-            outline: 3px solid rgba(56, 189, 248, 0.7);
-            outline-offset: 3px;
-        }
-
-
-        /* =========================================================
-           GAME SCREEN
-        ========================================================= */
-
-        .game-header {
-            display: flex;
-            align-items: center;
-
-            margin-bottom: 15px;
-        }
-
-        .compass-arena {
-            position: relative;
-
-            width: min(86vw, 420px);
-
-            aspect-ratio: 1 / 1;
-
-            margin:
-                clamp(14px, 4vw, 24px)
-                auto
-                clamp(22px, 6vw, 34px);
-
-            border:
-                clamp(3px, 1vw, 5px)
-                solid
-                var(--border);
-
-            border-radius: 50%;
-
-            background:
-                radial-gradient(
-                    circle,
-                    #1E293B 0%,
-                    #0F172A 85%
-                );
-
-            box-shadow:
-                0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-
-
-        /* =========================================================
-           COMPASS NEEDLE
-        ========================================================= */
-
-        .compass-needle {
-            position: absolute;
-
-            top: 50%;
-            left: 50%;
-
-            width: 8px;
-
-            /*
-             * The height scales with the compass.
-             */
-            height: 36%;
-
-            margin-left: -4px;
-
-            margin-top: -18%;
-
-            /*
-             * Rotation happens around the center
-             * of the compass.
-             */
-            transform-origin: 50% 50%;
-
-            transition:
-                transform
-                3s
-                cubic-bezier(0.15, 0.9, 0.2, 1);
-
-            pointer-events: none;
-
-            z-index: 10;
-        }
-
-        .needle-arrow {
-            position: absolute;
-
-            top: -10px;
-            left: -11px;
-
-            width: 0;
-            height: 0;
-
-            border-left: 15px solid transparent;
-            border-right: 15px solid transparent;
-
-            border-bottom: 20px solid var(--danger);
-        }
-
-        .needle-line {
-            position: absolute;
-
-            top: 8px;
-            left: -4px;
-
-            width: 0;
-
-            height: 60px;
-
-            border-left: 8.5px solid var(--danger);
-            border-right: 8.5px solid var(--danger);
-
-            border-bottom: 10px solid var(--danger);
-
-            border-bottom-left-radius: 16px;
-            border-bottom-right-radius: 16px;
-        }
-
-        .compass-center-pin {
-            position: absolute;
-
-            top: 50%;
-            left: 50%;
-
-            width: clamp(13px, 4vw, 18px);
-
-            aspect-ratio: 1 / 1;
-
-            background: #FFFFFF;
-
-            border:
-                3px solid
-                var(--background);
-
-            border-radius: 50%;
-
-            transform:
-                translate(-50%, -50%);
-
-            z-index: 11;
-        }
-
-
-        /* =========================================================
-           PLAYER DOTS
-        ========================================================= */
-
-        .player-dot-wrapper {
-            position: absolute;
-
-            transform:
-                translate(-50%, -50%);
-
-            display: flex;
-
-            flex-direction: column;
-
-            align-items: center;
-
-            z-index: 5;
-        }
-
-        .player-dot {
-            width: clamp(11px, 3.5vw, 16px);
-
-            aspect-ratio: 1 / 1;
-
-            background-color: var(--muted);
-
-            border:
-                2px solid
-                #1E293B;
-
-            border-radius: 50%;
-
-            transition: all 0.2s ease;
-
-            box-shadow:
-                0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .player-label {
-            margin-top: 4px;
-
-            color: var(--muted-light);
-
-            font-size: clamp(7px, 2.5vw, 11px);
-
-            font-weight: 700;
-
-            letter-spacing: 0.5px;
-
-            line-height: 1.2;
-
-            white-space: nowrap;
-
-            transition: all 0.2s ease;
-        }
-
-        .player-dot-wrapper.active .player-dot {
-            background-color: var(--danger);
-
-            transform: scale(1.5);
-
-            border-color: #FFFFFF;
-
-            box-shadow:
-                0 0 12px var(--danger);
-        }
-
-        .player-dot-wrapper.active .player-label {
-            color: var(--primary);
-
-            transform: scale(1.15);
-
-            text-shadow:
-                0 0 8px
-                rgba(56, 189, 248, 0.6);
-        }
-
-
-        /* =========================================================
-           SPIN BUTTON
-        ========================================================= */
-
-        #spin-btn {
-            min-height: clamp(56px, 16vw, 72px);
-
-            font-size: clamp(17px, 5vw, 24px);
-
-            letter-spacing:
-                clamp(0.8px, 0.4vw, 2px);
-        }
-
-
-        /* =========================================================
-           MODALS
-        ========================================================= */
-
-        .modal-overlay {
-            position: fixed;
-
-            inset: 0;
-
-            z-index: 100;
-
-            padding: var(--page-padding);
-
-            display: flex;
-
-            align-items: center;
-            justify-content: center;
-
-            background:
-                rgba(0, 0, 0, 0.7);
-
-            opacity: 0;
-
-            pointer-events: none;
-
-            transition:
-                opacity 0.2s ease;
-        }
-
-        .modal-overlay.open {
-            opacity: 1;
-
-            pointer-events: auto;
-        }
-
-        .modal {
-            width: min(100%, 440px);
-
-            max-height:
-                min(90dvh, 700px);
-
-            padding:
-                clamp(22px, 6vw, 34px);
-
-            overflow-y: auto;
-
-            border-radius:
-                clamp(16px, 4vw, 22px);
-
-            background: var(--surface);
-
-            box-shadow:
-                0 10px 25px
-                rgba(0, 0, 0, 0.5);
-
-            text-align: center;
-
-            transform:
-                translateY(20px);
-
-            transition:
-                transform 0.2s ease;
-        }
-
-        .modal-overlay.open .modal {
-            transform:
-                translateY(0);
-        }
-
-        .modal-title {
-            margin-bottom:
-                clamp(14px, 4vw, 22px);
-
-            font-size:
-                clamp(21px, 7vw, 30px);
-
-            font-weight: bold;
-
-            line-height: 1.2;
-        }
-
-        .modal-content-text {
-            margin-bottom:
-                clamp(18px, 5vw, 28px);
-
-            color: var(--muted-light);
-
-            font-size:
-                clamp(15px, 4.5vw, 20px);
-
-            line-height: 1.5;
-        }
-
-        .modal-outcome-text {
-            margin-bottom:
-                clamp(22px, 6vw, 32px);
-
-            color: #FFFFFF;
-
-            font-size:
-                clamp(17px, 5vw, 22px);
-
-            line-height: 1.5;
-        }
-
-        .modal-btn-group {
-            display: flex;
-
-            flex-direction: column;
-
-            gap:
-                clamp(10px, 3vw, 16px);
-        }
-
-        .btn-truth {
-            background: #0284C7;
-            color: #FFFFFF;
-        }
-
-        .btn-dare {
-            background: #0F766E;
-            color: #FFFFFF;
-        }
-
-
-        /* =========================================================
-           MOBILE
-        ========================================================= */
-
-        @media (max-width: 480px) {
-
-            body {
-                align-items: flex-start;
-            }
-
-            .container {
-                max-height: none;
-
-                margin-top:
-                    clamp(26px, 8vh, 64px);
-            }
-
-            .persistent-header {
-                display: none;
-            }
-
-            .subpage-title {
-                padding-right: 50px;
-            }
-
-            .compass-arena {
-                width: min(86vw, 360px);
-            }
-        }
-
-
-        /* =========================================================
-           TABLET
-        ========================================================= */
-
-        @media (min-width: 481px) and (max-width: 900px) {
-
-            .container {
-                width:
-                    min(92vw, var(--content-width));
-            }
-
-            .compass-arena {
-                width:
-                    min(70vw, 400px);
-            }
-        }
-
-
-        /* =========================================================
-           DESKTOP
-        ========================================================= */
-
-        @media (min-width: 901px) {
-
-            .container {
-                width:
-                    min(90vw, var(--content-width));
-            }
-
-            .compass-arena {
-                width:
-                    min(45vw, 420px);
-            }
-        }
-
-
-        /* =========================================================
-           LANDSCAPE
-        ========================================================= */
-
-        @media (max-height: 560px) and (orientation: landscape) {
-
-            body {
-                align-items: flex-start;
-            }
-
-            .container {
-                max-height: none;
-
-                margin-top: 20px;
-            }
-
-            .compass-arena {
-                width:
-                    min(45vh, 300px);
-
-                margin-top: 10px;
-
-                margin-bottom: 18px;
-            }
-
-            .subpage-header {
-                margin-bottom: 16px;
-            }
-
-            .modal {
-                max-height: 88dvh;
-            }
-        }
-
-
-        /* =========================================================
-           REDUCED MOTION
-        ========================================================= */
-
-        @media (prefers-reduced-motion: reduce) {
-
-            *,
-            *::before,
-            *::after {
-                scroll-behavior: auto !important;
-
-                transition-duration:
-                    0.01ms !important;
-
-                animation-duration:
-                    0.01ms !important;
-
-                animation-iteration-count:
-                    1 !important;
-            }
-
-            .compass-needle {
-                transition: none;
-            }
-        }
-
-    </style>
+</style>
 </head>
-
 
 <body>
 
+<div class="app">
 
-    <!-- =========================================================
-         SPLASH
-    ========================================================= -->
+<!-- =====================================================
+     SPLASH
+===================================================== -->
 
-    <div
-        class="splash"
-        id="splash-screen"
-    >
-        <h1>
-            TRUTH<br>
-            OR<br>
-            DARE
+<section class="screen active" id="splash">
+
+    <div class="logo">
+
+        <div class="logo-mark">
+            D
+        </div>
+
+        <h1>DARE</h1>
+
+        <p>Make the room interesting.</p>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     HOME
+===================================================== -->
+
+<section class="screen" id="home">
+
+    <div class="topbar">
+
+        <div class="brand">
+            DARE.
+        </div>
+
+        <button
+            class="icon-button"
+            onclick="openSettings()"
+            aria-label="Settings">
+
+            ⚙
+
+        </button>
+
+    </div>
+
+
+    <div class="home-content">
+
+        <div class="hero">
+
+            <div class="eyebrow">
+                A social game for real moments
+            </div>
+
+            <h1 class="hero-title">
+                Make<br>
+                it <span>interesting.</span>
+            </h1>
+
+            <p class="hero-description">
+                No complicated rules. No awkward setup.
+                Put the phone down, spin, and let the room decide.
+            </p>
+
+        </div>
+
+
+        <button
+            class="primary-button"
+            onclick="openSetup()">
+
+            START GAME
+
+            <span class="arrow">→</span>
+
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     SETUP
+===================================================== -->
+
+<section class="screen" id="setup">
+
+    <div class="topbar">
+
+        <button
+            class="icon-button"
+            onclick="showScreen('home')">
+
+            ←
+
+        </button>
+
+        <div class="brand">
+            SETUP
+        </div>
+
+        <div style="width:44px"></div>
+
+    </div>
+
+
+    <div class="setup-content">
+
+        <div class="eyebrow">
+            Before we begin
+        </div>
+
+        <h1 class="page-title">
+            Set the room.
         </h1>
-    </div>
+
+        <p class="page-subtitle">
+            Choose how many people are playing and
+            how intense the experience should feel.
+        </p>
 
 
-    <!-- =========================================================
-         PERSISTENT HEADER
-    ========================================================= -->
+        <div class="setup-grid">
 
-    <div
-        class="persistent-header"
-        id="persistent-header"
-    >
-        TRUTH OR DARE
-    </div>
+            <!-- PEOPLE -->
+
+            <div class="setup-card">
+
+                <div class="card-top">
+
+                    <div>
+
+                        <div class="card-label">
+                            People
+                        </div>
+
+                        <div class="card-description">
+                            Players in this round
+                        </div>
+
+                    </div>
+
+                    <div
+                        class="card-value"
+                        id="peopleValue">
+
+                        4
+
+                    </div>
+
+                </div>
 
 
-    <!-- =========================================================
-         MAIN CONTAINER
-    ========================================================= -->
+                <div class="range-wrap">
 
-    <div
-        class="container"
-        id="main-container"
-    >
+                    <input
+                        id="peopleRange"
+                        type="range"
+                        min="2"
+                        max="12"
+                        value="4"
+                        oninput="updatePeople(this.value)">
 
+                    <div class="range-labels">
+                        <span>2</span>
+                        <span>12</span>
+                    </div>
 
-        <!-- =====================================================
-             MAIN MENU
-        ===================================================== -->
-
-        <div
-            id="setup-screen"
-            class="screen active"
-        >
-
-            <div class="menu-title">
-
-                <h2>
-                    READY?
-                </h2>
+                </div>
 
             </div>
 
 
-            <div class="menu-subtitle">
-                SET YOUR GAME
-            </div>
+            <!-- DIFFICULTY -->
+
+            <div class="setup-card">
+
+                <div class="card-label">
+                    Intensity
+                </div>
+
+                <div class="card-description">
+                    Set the energy of the game
+                </div>
 
 
-            <div class="menu-options">
+                <div class="difficulty-list">
+
+                    <button
+                        class="difficulty selected"
+                        data-level="Fun"
+                        onclick="selectDifficulty(this)">
+
+                        <strong>Fun</strong>
+                        <span>Easy & playful</span>
+
+                    </button>
 
 
-                <button
-                    type="button"
-                    id="start-btn"
-                    class="btn btn-primary"
-                >
-                    READY
-                </button>
+                    <button
+                        class="difficulty"
+                        data-level="Soft"
+                        onclick="selectDifficulty(this)">
+
+                        <strong>Soft</strong>
+                        <span>More personal</span>
+
+                    </button>
 
 
-                <button
-                    type="button"
-                    class="menu-option"
-                    id="people-btn"
-                >
+                    <button
+                        class="difficulty"
+                        data-level="Hard"
+                        onclick="selectDifficulty(this)">
 
-                    <div class="menu-option-left">
+                        <strong>Hard</strong>
+                        <span>Push the room</span>
 
-                        <div class="menu-option-icon">
-                            ●
-                        </div>
+                    </button>
 
 
-                        <div class="menu-option-text">
+                    <button
+                        class="difficulty"
+                        data-level="Extreme"
+                        onclick="selectDifficulty(this)">
 
-                            <div class="menu-option-title">
-                                PEOPLE
-                            </div>
+                        <strong>Extreme</strong>
+                        <span>No holding back</span>
 
-                            <div
-                                class="menu-option-value"
-                                id="people-summary"
-                            >
-                                2 PLAYERS
-                            </div>
+                    </button>
 
-                        </div>
-
-                    </div>
-
-
-                    <div class="menu-arrow">
-                        ›
-                    </div>
-
-                </button>
-
-
-                <button
-                    type="button"
-                    class="menu-option"
-                    id="difficulty-btn"
-                >
-
-                    <div class="menu-option-left">
-
-                        <div class="menu-option-icon">
-                            ◆
-                        </div>
-
-
-                        <div class="menu-option-text">
-
-                            <div class="menu-option-title">
-                                DIFFICULTY
-                            </div>
-
-                            <div
-                                class="menu-option-value"
-                                id="difficulty-summary"
-                            >
-                                EASY
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="menu-arrow">
-                        ›
-                    </div>
-
-                </button>
-
-
-                <button
-                    type="button"
-                    class="menu-option"
-                    id="settings-btn"
-                >
-
-                    <div class="menu-option-left">
-
-                        <div class="menu-option-icon">
-                            ⚙
-                        </div>
-
-
-                        <div class="menu-option-text">
-
-                            <div class="menu-option-title">
-                                SETTINGS
-                            </div>
-
-                            <div class="menu-option-value">
-                                SOUND • VIBRATION • EFFECTS
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="menu-arrow">
-                        ›
-                    </div>
-
-                </button>
+                </div>
 
             </div>
 
         </div>
 
 
-        <!-- =====================================================
-             PEOPLE SCREEN
-        ===================================================== -->
+        <div style="margin-top:auto;padding-top:20px">
 
-        <div
-            id="people-screen"
-            class="screen"
-        >
+            <button
+                class="primary-button"
+                onclick="startGame()">
 
-            <div class="subpage-header">
+                ENTER THE GAME
 
-                <button
-                    type="button"
-                    class="back-btn"
-                    id="back-from-people"
-                >
-                    &lt; BACK
-                </button>
+                <span class="arrow">→</span>
+
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
 
 
-                <div class="subpage-title">
-                    PEOPLE
+<!-- =====================================================
+     SETTINGS
+===================================================== -->
+
+<section class="screen" id="settings">
+
+    <div class="topbar">
+
+        <button
+            class="icon-button"
+            onclick="showScreen('home')">
+
+            ←
+
+        </button>
+
+        <div class="brand">
+            SETTINGS
+        </div>
+
+        <div style="width:44px"></div>
+
+    </div>
+
+
+    <div class="setup-content">
+
+        <div class="eyebrow">
+            Preferences
+        </div>
+
+        <h1 class="page-title">
+            Your game.
+        </h1>
+
+        <p class="page-subtitle">
+            Adjust the little things without getting
+            in the way of the experience.
+        </p>
+
+
+        <div class="settings-list">
+
+
+            <div class="setting-row">
+
+                <div class="setting-info">
+
+                    <strong>Sound</strong>
+
+                    <span>
+                        Interface and game sounds
+                    </span>
+
                 </div>
 
-            </div>
-
-
-            <label
-                for="player-slider"
-                class="section-label"
-            >
-                NUMBER OF PLAYERS
-            </label>
-
-
-            <div class="slider-container">
-
-                <input
-                    type="range"
-                    id="player-slider"
-                    min="2"
-                    max="10"
-                    value="2"
-                    aria-label="Number of players"
-                >
+                <button
+                    id="soundToggle"
+                    class="toggle on"
+                    onclick="toggleSetting('sound')">
+                </button>
 
             </div>
 
 
-            <div class="player-count-info">
+            <div class="setting-row">
 
-                <strong id="large-player-count">
-                    2
-                </strong>
+                <div class="setting-info">
 
-                <span>
-                    PLAYERS
+                    <strong>Vibration</strong>
+
+                    <span>
+                        Haptic feedback during play
+                    </span>
+
+                </div>
+
+                <button
+                    id="vibrationToggle"
+                    class="toggle on"
+                    onclick="toggleSetting('vibration')">
+                </button>
+
+            </div>
+
+
+            <div class="setting-row">
+
+                <div class="setting-info">
+
+                    <strong>Auto advance</strong>
+
+                    <span>
+                        Continue after completing a prompt
+                    </span>
+
+                </div>
+
+                <button
+                    id="autoToggle"
+                    class="toggle"
+                    onclick="toggleSetting('auto')">
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     GAME / SPINNER
+===================================================== -->
+
+<section class="screen game-screen" id="game">
+
+    <div class="game-top">
+
+        <button
+            class="icon-button"
+            onclick="confirmExit()">
+
+            ×
+
+        </button>
+
+
+        <div class="turn-label">
+
+            <small>TURN</small>
+
+            <strong id="turnPlayer">
+                Player 1
+            </strong>
+
+        </div>
+
+
+        <button
+            class="icon-button"
+            onclick="openSettingsFromGame()">
+
+            ⚙
+
+        </button>
+
+    </div>
+
+
+    <div class="spinner-area">
+
+        <div class="wheel" id="wheel">
+
+            <div class="pointer"></div>
+
+            <div class="wheel-text">
+
+                <span class="truth">
+                    TRUTH
+                </span>
+
+                <span class="dare">
+                    DARE
+                </span>
+
+                <span class="random">
+                    RANDOM
                 </span>
 
             </div>
 
-
-            <button
-                type="button"
-                class="btn btn-primary"
-                id="people-done"
-            >
-                DONE
-            </button>
+            <div class="wheel-center">
+                SPIN
+            </div>
 
         </div>
 
 
-        <!-- =====================================================
-             DIFFICULTY SCREEN
-        ===================================================== -->
+        <button
+            id="spinButton"
+            class="spin-button"
+            onclick="spin()">
 
-        <div
-            id="difficulty-screen"
-            class="screen"
-        >
+            SPIN THE ROOM
 
-            <div class="subpage-header">
+        </button>
 
-                <button
-                    type="button"
-                    class="back-btn"
-                    id="back-from-difficulty"
-                >
-                    &lt; BACK
-                </button>
+    </div>
+
+</section>
 
 
-                <div class="subpage-title">
-                    DIFFICULTY
-                </div>
+<!-- =====================================================
+     REVEAL
+===================================================== -->
 
-            </div>
+<section class="screen" id="reveal">
 
+    <div class="game-top">
 
-            <div class="difficulty-options">
+        <button
+            class="icon-button"
+            onclick="showScreen('game')">
 
+            ←
 
-                <label class="difficulty-option">
-
-                    <input
-                        type="radio"
-                        name="difficulty"
-                        id="level-easy"
-                        value="easy"
-                        checked
-                    >
+        </button>
 
 
-                    <div class="difficulty-text">
+        <div class="turn-label">
 
-                        <strong>
-                            EASY
-                        </strong>
+            <small id="promptType">
+                TRUTH
 
-                        <span>
-                            CASUAL QUESTIONS & SIMPLE DARES
-                        </span>
+            </small>
 
-                    </div>
-
-                </label>
-
-
-                <label class="difficulty-option">
-
-                    <input
-                        type="radio"
-                        name="difficulty"
-                        id="level-medium"
-                        value="medium"
-                    >
-
-
-                    <div class="difficulty-text">
-
-                        <strong>
-                            MEDIUM
-                        </strong>
-
-                        <span>
-                            MORE PERSONAL QUESTIONS & CHALLENGES
-                        </span>
-
-                    </div>
-
-                </label>
-
-
-                <label class="difficulty-option">
-
-                    <input
-                        type="radio"
-                        name="difficulty"
-                        id="level-hard"
-                        value="hard"
-                    >
-
-
-                    <div class="difficulty-text">
-
-                        <strong>
-                            HARD
-                        </strong>
-
-                        <span>
-                            BOLD QUESTIONS & CHALLENGING DARES
-                        </span>
-
-                    </div>
-
-                </label>
-
-            </div>
-
-
-            <button
-                type="button"
-                class="btn btn-primary"
-                id="difficulty-done"
-            >
-                DONE
-            </button>
+            <strong id="revealPlayer">
+                Player 1
+            </strong>
 
         </div>
 
 
-        <!-- =====================================================
-             SETTINGS SCREEN
-        ===================================================== -->
+        <div style="width:44px"></div>
 
-        <div
-            id="settings-screen"
-            class="screen"
-        >
-
-            <div class="subpage-header">
-
-                <button
-                    type="button"
-                    class="back-btn"
-                    id="back-from-settings"
-                >
-                    &lt; BACK
-                </button>
+    </div>
 
 
-                <div class="subpage-title">
-                    SETTINGS
-                </div>
+    <div class="reveal-content">
 
-            </div>
-
-
-            <div class="settings-list">
-
-
-                <div class="setting-row">
-
-                    <div>
-
-                        <div class="setting-name">
-                            Sound
-                        </div>
-
-                        <div class="setting-description">
-                            GAME AUDIO
-                        </div>
-
-                    </div>
-
-
-                    <label class="toggle">
-
-                        <input
-                            type="checkbox"
-                            id="sound-toggle"
-                            checked
-                            aria-label="Enable game sound"
-                        >
-
-                        <span class="toggle-slider"></span>
-
-                    </label>
-
-                </div>
-
-
-                <div class="setting-row">
-
-                    <div>
-
-                        <div class="setting-name">
-                            Vibration
-                        </div>
-
-                        <div class="setting-description">
-                            HAPTIC FEEDBACK
-                        </div>
-
-                    </div>
-
-
-                    <label class="toggle">
-
-                        <input
-                            type="checkbox"
-                            id="vibration-toggle"
-                            checked
-                            aria-label="Enable vibration"
-                        >
-
-                        <span class="toggle-slider"></span>
-
-                    </label>
-
-                </div>
-
-
-                <div class="setting-row">
-
-                    <div>
-
-                        <div class="setting-name">
-                            Spin Effect
-                        </div>
-
-                        <div class="setting-description">
-                            COMPASS ANIMATION
-                        </div>
-
-                    </div>
-
-
-                    <label class="toggle">
-
-                        <input
-                            type="checkbox"
-                            id="spin-effect-toggle"
-                            checked
-                            aria-label="Enable compass spin effect"
-                        >
-
-                        <span class="toggle-slider"></span>
-
-                    </label>
-
-                </div>
-
-
-                <div class="setting-row">
-
-                    <div>
-
-                        <div class="setting-name">
-                            Game Effects
-                        </div>
-
-                        <div class="setting-description">
-                            SELECTION EFFECTS
-                        </div>
-
-                    </div>
-
-
-                    <label class="toggle">
-
-                        <input
-                            type="checkbox"
-                            id="effects-toggle"
-                            checked
-                            aria-label="Enable game effects"
-                        >
-
-                        <span class="toggle-slider"></span>
-
-                    </label>
-
-                </div>
-
-            </div>
-
-
-            <button
-                type="button"
-                class="btn btn-primary"
-                id="settings-done"
-            >
-                DONE
-            </button>
-
+        <div class="prompt-type">
+            YOUR PROMPT
         </div>
 
 
-        <!-- =====================================================
-             GAME SCREEN
-        ===================================================== -->
+        <div class="prompt-card">
 
-        <div
-            id="game-screen"
-            class="screen"
-        >
+            <div>
 
-            <div class="game-header">
-
-                <button
-                    type="button"
-                    id="back-to-setup"
-                    class="back-btn"
-                >
-                    &lt; BACK
-                </button>
-
-            </div>
-
-
-            <div
-                class="compass-arena"
-                id="compass-arena"
-                role="img"
-                aria-label="Compass showing the selected player"
-            >
+                <h2 id="promptText">
+                    Loading...
+                </h2>
 
                 <div
-                    class="compass-needle"
-                    id="compass-needle"
-                >
+                    class="player-name"
+                    id="playerText">
 
-                    <div class="needle-arrow"></div>
-
-                    <div class="needle-line"></div>
+                    This one is for
+                    <strong>Player 1</strong>.
 
                 </div>
 
-
-                <div class="compass-center-pin"></div>
-
             </div>
 
 
+            <div class="prompt-number">
+                PROMPT <span id="promptNumber">01</span>
+            </div>
+
+        </div>
+
+
+        <div class="action-row">
+
             <button
-                type="button"
-                id="spin-btn"
-                class="btn btn-primary"
-            >
-                SPIN COMPASS
+                class="secondary-button"
+                onclick="skipPrompt()">
+
+                SKIP
+
+            </button>
+
+            <button
+                class="secondary-button primary"
+                onclick="completePrompt()">
+
+                DONE →
+
             </button>
 
         </div>
 
     </div>
 
+</section>
 
-    <!-- =========================================================
-         CHOICE MODAL
-    ========================================================= -->
+</div>
 
-    <div
-        id="choice-modal"
-        class="modal-overlay"
-    >
 
-        <div class="modal">
+<script>
 
+/* =========================================================
+   STATE
+========================================================= */
 
-            <div
-                id="modal-player-name"
-                class="modal-title"
-                style="color:#38BDF8;"
-            >
-                Player Name
-            </div>
+const state = {
 
+    screen: "splash",
 
-            <div class="modal-content-text">
-                Make your choice:
-            </div>
+    players: 4,
 
+    difficulty: "Fun",
 
-            <div class="modal-btn-group">
+    currentPlayer: 0,
 
+    promptCount: 0,
 
-                <button
-                    type="button"
-                    id="choose-truth-btn"
-                    class="btn btn-truth"
-                >
-                    Truth
-                </button>
+    rotation: 0,
 
+    sound: true,
 
-                <button
-                    type="button"
-                    id="choose-dare-btn"
-                    class="btn btn-dare"
-                >
-                    Dare
-                </button>
+    vibration: true,
 
-            </div>
+    auto: false,
 
-        </div>
+    spinning: false
 
-    </div>
+};
 
 
-    <!-- =========================================================
-         OUTCOME MODAL
-    ========================================================= -->
+let players = [];
 
-    <div
-        id="outcome-modal"
-        class="modal-overlay"
-    >
 
-        <div class="modal">
+/* =========================================================
+   CONTENT
+========================================================= */
 
+const prompts = {
 
-            <div
-                id="outcome-title"
-                class="modal-title"
-            >
-                TRUTH
-            </div>
+    Fun: {
 
+        truth: [
 
-            <div
-                id="outcome-text"
-                class="modal-outcome-text"
-            >
-                Content goes here...
-            </div>
+            "What is the funniest thing you've ever done to impress someone?",
 
+            "What is a skill you wish you were secretly amazing at?",
 
-            <button
-                type="button"
-                id="next-spin-btn"
-                class="btn btn-primary"
-            >
-                NEXT SPIN
-            </button>
+            "What is the most ridiculous thing you believed as a child?",
 
-        </div>
+            "What is your most useless talent?",
 
-    </div>
+            "What is something you pretend to understand but actually don't?",
 
+            "What is the weirdest food combination you secretly enjoy?",
 
-    <!-- =========================================================
-         JAVASCRIPT
-    ========================================================= -->
+            "Who in this room would survive longest in a zombie apocalypse?",
 
-    <script>
+            "What is the most embarrassing song you know all the words to?"
 
+        ],
 
-        /* =========================================================
-           SPLASH
-        ========================================================= */
+        dare: [
 
-        setTimeout(function () {
+            "Do your best celebrity impression until someone guesses it.",
 
-            const splash =
-                document.getElementById(
-                    "splash-screen"
-                );
+            "Speak in a dramatic movie-trailer voice for the next round.",
 
-            const mainContainer =
-                document.getElementById(
-                    "main-container"
-                );
+            "Let the group choose your profile picture for five minutes.",
 
-            const persistentHeader =
-                document.getElementById(
-                    "persistent-header"
-                );
+            "Create a completely ridiculous product advertisement using only things around you.",
 
+            "Dance without music for 20 seconds.",
 
-            splash.style.opacity = "0";
+            "Pretend you're accepting an award and thank everyone in the room.",
 
+            "Try to make everyone laugh without saying a single word.",
 
-            setTimeout(function () {
+            "Act like a professional news reporter and describe what is happening around you."
 
-                splash.style.display = "none";
+        ]
 
-                mainContainer.style.display =
-                    "block";
+    },
 
-                persistentHeader.style.display =
-                    "block";
 
-            }, 500);
+    Soft: {
 
-        }, 3000);
+        truth: [
 
+            "What is something you wish people understood about you?",
 
-        /* =========================================================
-           APP STATE
-        ========================================================= */
+            "What is one compliment you still remember?",
 
-        let playerCount = 2;
+            "When was the last time someone genuinely surprised you?",
 
-        let players = [];
+            "What is something you have changed your mind about recently?",
 
-        let selectedDifficulty = "easy";
+            "What is one thing you are currently trying to improve about yourself?",
 
-        let isSpinning = false;
+            "Who knows you better than most people?",
 
-        let currentRotation = 0;
+            "What is something you rarely tell people about yourself?",
 
-        let soundEnabled = true;
+            "What is one memory you would happily relive?"
 
-        let vibrationEnabled = true;
+        ],
 
-        let spinEffectEnabled = true;
+        dare: [
 
-        let effectsEnabled = true;
+            "Give everyone in the room a genuine compliment.",
 
+            "Send a wholesome message to someone you haven't talked to recently.",
 
-        /* =========================================================
-           CONTENT
-        ========================================================= */
+            "Tell the person on your left one thing you appreciate about them.",
 
-        const gameContent = {
+            "Give a 30-second motivational speech about something completely ordinary.",
 
-            easy: {
+            "Recreate your most-used emoji with your face.",
 
-                truths: [
+            "Let another player choose a harmless nickname for you for this game.",
 
-                    "What is your favorite food?",
+            "Tell a funny story using dramatic acting.",
 
-                    "What is your favorite movie?",
+            "Hold eye contact with another player for 15 seconds without laughing."
 
-                    "What is something that makes you happy?",
+        ]
 
-                    "What is your favorite hobby?",
+    },
 
-                    "What is your dream holiday?"
 
-                ],
+    Hard: {
 
-                dares: [
+        truth: [
 
-                    "Clap 10 times.",
+            "What is something you have never admitted to this group?",
 
-                    "Sing a song for 10 seconds.",
+            "What is the biggest lie you've told to avoid an awkward situation?",
 
-                    "Make a funny face.",
+            "What is something you regret not saying to someone?",
 
-                    "Speak in a funny voice for one round.",
+            "What is a first impression you had about someone here that changed?",
 
-                    "Do 5 jumping jacks."
+            "What is something you are afraid people might misunderstand about you?",
 
-                ]
+            "What is the hardest decision you've made recently?",
 
-            },
+            "What is one thing you would change about your past if you could?",
 
+            "What is something you want to achieve but haven't told many people about?"
 
-            medium: {
+        ],
 
-                truths: [
+        dare: [
 
-                    "What is your biggest secret?",
+            "Let the group ask you one question and answer it honestly.",
 
-                    "Who was your first crush?",
+            "Call a friend and tell them one thing you genuinely appreciate about them.",
 
-                    "What is your most embarrassing moment?",
+            "Recreate an embarrassing moment from your life using full acting.",
 
-                    "What is something you regret?",
+            "Let another player choose a harmless challenge for you.",
 
-                    "What is a lie you have told recently?"
+            "Read your last sent message out loud.",
 
-                ],
+            "Give yourself a brutally honest 20-second introduction.",
 
-                dares: [
+            "Let the group choose one word that describes you and explain whether they are right.",
 
-                    "Dance without music for 30 seconds.",
+            "Tell the room your most unexpected opinion about yourself."
 
-                    "Talk in a funny voice for one round.",
+        ]
 
-                    "Let another player choose your next pose.",
+    },
 
-                    "Act like a celebrity for one minute.",
 
-                    "Tell a joke without laughing."
+    Extreme: {
 
-                ]
+        truth: [
 
-            },
+            "What is a truth about yourself you usually avoid thinking about?",
 
+            "What is the biggest risk you've ever taken because of another person?",
 
-            hard: {
+            "What is something you wish you could undo?",
 
-                truths: [
+            "What is the most difficult truth you've had to accept?",
 
-                    "What is something you have never told anyone here?",
+            "What is something you have hidden because you were afraid of being judged?",
 
-                    "Who do you secretly admire?",
+            "What is one decision that completely changed your life?",
 
-                    "What is the biggest lie you have ever told?",
+            "What is something you desperately want people to notice about you?",
 
-                    "What is something you are afraid to admit?",
+            "What is the most vulnerable thing you could admit right now?"
 
-                    "What is your most uncomfortable secret?"
+        ],
 
-                ],
+        dare: [
 
-                dares: [
+            "Let the group choose one completely harmless challenge that you must attempt.",
 
-                    "Show the last photo in your gallery.",
+            "Give an honest 30-second speech about something you genuinely care about.",
 
-                    "Call a friend and sing a song to them.",
+            "Tell the room something you have never said out loud before.",
 
-                    "Let another player choose your profile picture for 10 minutes.",
+            "Call someone you trust and tell them exactly why they matter to you.",
 
-                    "Do an embarrassing dance for 30 seconds.",
+            "Let another player ask you one follow-up question after your next truth.",
 
-                    "Speak only in questions for the next round."
+            "Act out the most dramatic version of your last embarrassing moment.",
 
-                ]
+            "Give another player a sincere compliment while maintaining eye contact.",
 
-            }
+            "Stand up and deliver a completely improvised speech titled: 'The truth about me.'"
 
-        };
+        ]
 
+    }
 
-        let unusedTruths = [];
+};
 
-        let unusedDares = [];
 
+/* =========================================================
+   SCREEN SYSTEM
+========================================================= */
 
-        /* =========================================================
-           DOM
-        ========================================================= */
+function showScreen(id) {
 
-        const setupScreen =
-            document.getElementById(
-                "setup-screen"
-            );
+    document
+        .querySelectorAll(".screen")
+        .forEach(screen => {
 
-        const peopleScreen =
-            document.getElementById(
-                "people-screen"
-            );
+            screen.classList.remove("active");
 
-        const difficultyScreen =
-            document.getElementById(
-                "difficulty-screen"
-            );
+        });
 
-        const settingsScreen =
-            document.getElementById(
-                "settings-screen"
-            );
 
-        const gameScreen =
-            document.getElementById(
-                "game-screen"
-            );
+    const target =
+        document.getElementById(id);
 
+    if (target) {
 
-        const peopleBtn =
-            document.getElementById(
-                "people-btn"
-            );
+        target.classList.add("active");
 
-        const difficultyBtn =
-            document.getElementById(
-                "difficulty-btn"
-            );
+        state.screen = id;
 
-        const settingsBtn =
-            document.getElementById(
-                "settings-btn"
-            );
+    }
 
-        const startBtn =
-            document.getElementById(
-                "start-btn"
-            );
+}
 
 
-        const playerSlider =
-            document.getElementById(
-                "player-slider"
-            );
+/* =========================================================
+   SPLASH
+========================================================= */
 
-        const largePlayerCount =
-            document.getElementById(
-                "large-player-count"
-            );
+setTimeout(() => {
 
-        const peopleSummary =
-            document.getElementById(
-                "people-summary"
-            );
+    showScreen("home");
 
-        const difficultySummary =
-            document.getElementById(
-                "difficulty-summary"
-            );
+}, 1700);
 
 
-        const spinBtn =
-            document.getElementById(
-                "spin-btn"
-            );
+/* =========================================================
+   HOME
+========================================================= */
 
-        const compassArena =
-            document.getElementById(
-                "compass-arena"
-            );
+function openSetup() {
 
-        const compassNeedle =
-            document.getElementById(
-                "compass-needle"
-            );
+    showScreen("setup");
 
+    haptic();
 
-        const choiceModal =
-            document.getElementById(
-                "choice-modal"
-            );
+}
 
-        const modalPlayerName =
-            document.getElementById(
-                "modal-player-name"
-            );
 
-        const chooseTruthBtn =
-            document.getElementById(
-                "choose-truth-btn"
-            );
+function openSettings() {
 
-        const chooseDareBtn =
-            document.getElementById(
-                "choose-dare-btn"
-            );
+    showScreen("settings");
 
+}
 
-        const outcomeModal =
-            document.getElementById(
-                "outcome-modal"
-            );
 
-        const outcomeTitle =
-            document.getElementById(
-                "outcome-title"
-            );
+function openSettingsFromGame() {
 
-        const outcomeText =
-            document.getElementById(
-                "outcome-text"
-            );
+    showScreen("settings");
 
-        const nextSpinBtn =
-            document.getElementById(
-                "next-spin-btn"
-            );
+}
 
 
-        /* =========================================================
-           SCREEN NAVIGATION
-        ========================================================= */
+/* =========================================================
+   PLAYERS
+========================================================= */
 
-        function showScreen(screen) {
+function updatePeople(value) {
 
-            document
-                .querySelectorAll(".screen")
-                .forEach(function (item) {
+    state.players = Number(value);
 
-                    item.classList.remove(
-                        "active"
-                    );
+    document.getElementById("peopleValue").textContent =
+        value;
 
-                });
+}
 
 
-            screen.classList.add("active");
+function createPlayers() {
 
+    players = [];
 
-            /*
-             * Reset scroll position whenever
-             * navigating to another screen.
-             */
+    for (
+        let i = 1;
+        i <= state.players;
+        i++
+    ) {
 
-            const container =
-                document.getElementById(
-                    "main-container"
-                );
+        players.push(`Player ${i}`);
 
-            container.scrollTop = 0;
+    }
 
-        }
+}
 
 
-        peopleBtn.onclick =
-            function () {
+/* =========================================================
+   DIFFICULTY
+========================================================= */
 
-                showScreen(
-                    peopleScreen
-                );
+function selectDifficulty(button) {
 
-            };
+    document
+        .querySelectorAll(".difficulty")
+        .forEach(item => {
 
+            item.classList.remove("selected");
 
-        difficultyBtn.onclick =
-            function () {
+        });
 
-                showScreen(
-                    difficultyScreen
-                );
 
-            };
+    button.classList.add("selected");
 
+    state.difficulty =
+        button.dataset.level;
 
-        settingsBtn.onclick =
-            function () {
+    haptic();
 
-                showScreen(
-                    settingsScreen
-                );
+}
 
-            };
 
+/* =========================================================
+   START
+========================================================= */
+
+function startGame() {
+
+    createPlayers();
+
+    state.currentPlayer = 0;
+
+    state.promptCount = 0;
+
+    state.rotation = 0;
+
+    updateTurn();
+
+    showScreen("game");
+
+    haptic();
+
+}
+
+
+/* =========================================================
+   TURN
+========================================================= */
+
+function updateTurn() {
+
+    const name =
+        players[state.currentPlayer] ||
+        "Player 1";
+
+    document.getElementById(
+        "turnPlayer"
+    ).textContent = name;
+
+}
+
+
+/* =========================================================
+   SPIN
+========================================================= */
+
+function spin() {
+
+    if (state.spinning) return;
+
+    state.spinning = true;
+
+    const wheel =
+        document.getElementById("wheel");
+
+    const button =
+        document.getElementById("spinButton");
+
+
+    button.disabled = true;
+
+    button.textContent = "CHOOSING…";
+
+
+    const extra =
+        1080 +
+        Math.floor(Math.random() * 1080);
+
+
+    state.rotation += extra;
+
+
+    wheel.style.transform =
+        `rotate(${state.rotation}deg)`;
+
+
+    haptic(35);
+
+
+    setTimeout(() => {
+
+        state.spinning = false;
+
+        button.disabled = false;
+
+        button.textContent =
+            "SPIN THE ROOM";
+
+
+        revealPrompt();
+
+    }, 2900);
+
+}
+
+
+/* =========================================================
+   PROMPT
+========================================================= */
+
+function revealPrompt() {
+
+    const type =
+        Math.random() > .5
+            ? "truth"
+            : "dare";
+
+
+    const pool =
+        prompts[state.difficulty][type];
+
+
+    const prompt =
+        pool[
+            Math.floor(
+                Math.random() * pool.length
+            )
+        ];
+
+
+    state.promptCount++;
+
+
+    const player =
+        players[state.currentPlayer];
+
+
+    document.getElementById(
+        "promptType"
+    ).textContent =
+        type.toUpperCase();
+
+
+    document.getElementById(
+        "revealPlayer"
+    ).textContent =
+        player;
+
+
+    document.getElementById(
+        "promptText"
+    ).textContent =
+        prompt;
+
+
+    document.getElementById(
+        "playerText"
+    ).innerHTML =
+        `This one is for <strong>${player}</strong>.`;
+
+
+    document.getElementById(
+        "promptNumber"
+    ).textContent =
+        String(state.promptCount)
+        .padStart(2,"0");
+
+
+    showScreen("reveal");
+
+    haptic(60);
+
+}
+
+
+/* =========================================================
+   COMPLETE
+========================================================= */
+
+function completePrompt() {
+
+    nextPlayer();
+
+}
+
+
+/* =========================================================
+   SKIP
+========================================================= */
+
+function skipPrompt() {
+
+    haptic();
+
+    revealPrompt();
+
+}
+
+
+/* =========================================================
+   NEXT PLAYER
+========================================================= */
+
+function nextPlayer() {
+
+    state.currentPlayer++;
+
+    if (
+        state.currentPlayer >=
+        players.length
+    ) {
+
+        state.currentPlayer = 0;
+
+    }
+
+
+    updateTurn();
+
+    showScreen("game");
+
+    haptic();
+
+}
+
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+function toggleSetting(type) {
+
+    if (type === "sound") {
+
+        state.sound =
+            !state.sound;
 
         document
-            .getElementById(
-                "back-from-people"
-            )
-            .onclick =
-            function () {
+            .getElementById("soundToggle")
+            .classList.toggle(
+                "on",
+                state.sound
+            );
 
-                showScreen(
-                    setupScreen
-                );
-
-            };
+    }
 
 
-        document
-            .getElementById(
-                "back-from-difficulty"
-            )
-            .onclick =
-            function () {
+    if (type === "vibration") {
 
-                showScreen(
-                    setupScreen
-                );
-
-            };
-
+        state.vibration =
+            !state.vibration;
 
         document
-            .getElementById(
-                "back-from-settings"
-            )
-            .onclick =
-            function () {
+            .getElementById("vibrationToggle")
+            .classList.toggle(
+                "on",
+                state.vibration
+            );
 
-                showScreen(
-                    setupScreen
-                );
-
-            };
+    }
 
 
-        document
-            .getElementById(
-                "people-done"
-            )
-            .onclick =
-            function () {
+    if (type === "auto") {
 
-                showScreen(
-                    setupScreen
-                );
-
-            };
-
+        state.auto =
+            !state.auto;
 
         document
-            .getElementById(
-                "difficulty-done"
-            )
-            .onclick =
-            function () {
+            .getElementById("autoToggle")
+            .classList.toggle(
+                "on",
+                state.auto
+            );
 
-                showScreen(
-                    setupScreen
-                );
-
-            };
+    }
 
 
-        document
-            .getElementById(
-                "settings-done"
-            )
-            .onclick =
-            function () {
+    haptic();
 
-                showScreen(
-                    setupScreen
-                );
-
-            };
+}
 
 
-        /* =========================================================
-           PLAYER SLIDER
-        ========================================================= */
+/* =========================================================
+   HAPTIC
+========================================================= */
 
-        playerSlider.addEventListener(
-            "input",
-            function (event) {
+function haptic(duration = 20) {
 
-                playerCount =
-                    parseInt(
-                        event.target.value
-                    );
+    if (
+        !state.vibration
+    ) return;
 
 
-                largePlayerCount.textContent =
-                    playerCount;
+    if (
+        navigator.vibrate
+    ) {
+
+        navigator.vibrate(duration);
+
+    }
+
+}
 
 
-                peopleSummary.textContent =
-                    `${playerCount} PLAYERS`;
+/* =========================================================
+   EXIT
+========================================================= */
 
-            }
+function confirmExit() {
+
+    const leave =
+        confirm(
+            "Leave this game?"
         );
 
 
-        /* =========================================================
-           DIFFICULTY
-        ========================================================= */
+    if (leave) {
 
-        document
-            .querySelectorAll(
-                'input[name="difficulty"]'
-            )
-            .forEach(function (radio) {
+        showScreen("home");
 
-                radio.addEventListener(
-                    "change",
-                    function () {
+    }
 
-                        if (this.checked) {
-
-                            selectedDifficulty =
-                                this.value;
+}
 
 
-                            difficultySummary
-                                .textContent =
-                                selectedDifficulty
-                                    .toUpperCase();
+/* =========================================================
+   KEYBOARD / DESKTOP SUPPORT
+========================================================= */
 
-                        }
+document.addEventListener(
+    "keydown",
+    event => {
 
-                    }
-                );
-
-            });
-
-
-        /* =========================================================
-           SETTINGS
-        ========================================================= */
-
-        document
-            .getElementById(
-                "sound-toggle"
-            )
-            .addEventListener(
-                "change",
-                function () {
-
-                    soundEnabled =
-                        this.checked;
-
-                }
-            );
-
-
-        document
-            .getElementById(
-                "vibration-toggle"
-            )
-            .addEventListener(
-                "change",
-                function () {
-
-                    vibrationEnabled =
-                        this.checked;
-
-                }
-            );
-
-
-        document
-            .getElementById(
-                "spin-effect-toggle"
-            )
-            .addEventListener(
-                "change",
-                function () {
-
-                    spinEffectEnabled =
-                        this.checked;
-
-                }
-            );
-
-
-        document
-            .getElementById(
-                "effects-toggle"
-            )
-            .addEventListener(
-                "change",
-                function () {
-
-                    effectsEnabled =
-                        this.checked;
-
-                }
-            );
-
-
-        /* =========================================================
-           VIBRATION
-        ========================================================= */
-
-        function vibrate(pattern) {
-
-            if (
-                vibrationEnabled &&
-                navigator.vibrate
-            ) {
-
-                navigator.vibrate(
-                    pattern
-                );
-
-            }
-
-        }
-
-
-        /* =========================================================
-           CONTENT POOLS
-        ========================================================= */
-
-        function initGamePools() {
-
-            unusedTruths =
-                [
-                    ...gameContent[
-                        selectedDifficulty
-                    ].truths
-                ];
-
-
-            unusedDares =
-                [
-                    ...gameContent[
-                        selectedDifficulty
-                    ].dares
-                ];
-
-
-            shuffleArray(
-                unusedTruths
-            );
-
-            shuffleArray(
-                unusedDares
-            );
-
-        }
-
-
-        function shuffleArray(array) {
-
-            for (
-                let i = array.length - 1;
-                i > 0;
-                i--
-            ) {
-
-                const j =
-                    Math.floor(
-                        Math.random() *
-                        (i + 1)
-                    );
-
-
-                [
-                    array[i],
-                    array[j]
-                ] = [
-                    array[j],
-                    array[i]
-                ];
-
-            }
-
-        }
-
-
-        function getGameContent(
-            pool,
-            backup
+        if (
+            event.code === "Space" &&
+            state.screen === "game"
         ) {
 
-            if (
-                pool.length === 0
-            ) {
+            event.preventDefault();
 
-                pool.push(
-                    ...backup
-                );
-
-                shuffleArray(
-                    pool
-                );
-
-            }
-
-
-            const randomIndex =
-                Math.floor(
-                    Math.random() *
-                    pool.length
-                );
-
-
-            return pool.splice(
-                randomIndex,
-                1
-            )[0];
+            spin();
 
         }
 
-
-        /* =========================================================
-           START GAME
-        ========================================================= */
-
-        startBtn.addEventListener(
-            "click",
-            function () {
-
-                players =
-                    Array.from(
-                        {
-                            length:
-                                playerCount
-                        },
-                        function (_, index) {
-
-                            return `P${index + 1}`;
-
-                        }
-                    );
+    }
+);
 
 
-                initGamePools();
+/* =========================================================
+   PREVENT ACCIDENTAL PAGE BOUNCE
+========================================================= */
 
-                renderCompassDots();
+document.addEventListener(
+    "touchmove",
+    event => {
 
-
-                currentRotation = 0;
-
-
-                compassNeedle.style.transition =
-                    "none";
-
-                compassNeedle.style.transform =
-                    "rotate(0deg)";
-
-
-                /*
-                 * Restore the normal transition
-                 * after resetting the needle.
-                 */
-
-                requestAnimationFrame(
-                    function () {
-
-                        compassNeedle.style.transition =
-                            "transform 3s cubic-bezier(0.15, 0.9, 0.2, 1)";
-
-                    }
-                );
-
-
-                showScreen(
-                    gameScreen
-                );
-
-
-                vibrate(40);
-
-            }
-        );
-
-
-        /* =========================================================
-           BACK FROM GAME
-        ========================================================= */
-
-        document
-            .getElementById(
-                "back-to-setup"
+        if (
+            event.target.closest(
+                ".setup-content,.home-content,.reveal-content"
             )
-            .addEventListener(
-                "click",
-                function () {
+        ) return;
 
-                    if (isSpinning) {
-                        return;
-                    }
+        event.preventDefault();
 
+    },
+    { passive:false }
+);
 
-                    showScreen(
-                        setupScreen
-                    );
-
-                }
-            );
-
-
-        /* =========================================================
-           COMPASS PLAYERS
-           RESPONSIVE VERSION
-        ========================================================= */
-
-        function renderCompassDots() {
-
-            const existingWrappers =
-                compassArena.querySelectorAll(
-                    ".player-dot-wrapper"
-                );
-
-
-            existingWrappers.forEach(
-                function (wrapper) {
-
-                    wrapper.remove();
-
-                }
-            );
-
-
-            /*
-             * Percentage-based positioning.
-             *
-             * 50% = center of compass.
-             *
-             * 38% = distance from center.
-             *
-             * This automatically scales with
-             * the compass size.
-             */
-
-            const radiusPercentage =
-                38;
-
-
-            players.forEach(
-                function (player, index) {
-
-                    const angle =
-                        (
-                            index *
-                            360 /
-                            players.length
-                        ) -
-                        90;
-
-
-                    const radians =
-                        angle *
-                        Math.PI /
-                        180;
-
-
-                    const x =
-                        50 +
-                        radiusPercentage *
-                        Math.cos(
-                            radians
-                        );
-
-
-                    const y =
-                        50 +
-                        radiusPercentage *
-                        Math.sin(
-                            radians
-                        );
-
-
-                    const wrapper =
-                        document.createElement(
-                            "div"
-                        );
-
-
-                    wrapper.className =
-                        "player-dot-wrapper";
-
-
-                    wrapper.id =
-                        `player-wrapper-${index}`;
-
-
-                    wrapper.style.left =
-                        `${x}%`;
-
-
-                    wrapper.style.top =
-                        `${y}%`;
-
-
-                    const dot =
-                        document.createElement(
-                            "div"
-                        );
-
-
-                    dot.className =
-                        "player-dot";
-
-
-                    const label =
-                        document.createElement(
-                            "div"
-                        );
-
-
-                    label.className =
-                        "player-label";
-
-
-                    label.textContent =
-                        player;
-
-
-                    wrapper.appendChild(
-                        dot
-                    );
-
-                    wrapper.appendChild(
-                        label
-                    );
-
-
-                    compassArena.appendChild(
-                        wrapper
-                    );
-
-                }
-            );
-
-        }
-
-
-        /* =========================================================
-           KEEP PLAYER POSITIONS CORRECT
-           AFTER RESIZE / ROTATION
-        ========================================================= */
-
-        let resizeTimer;
-
-
-        window.addEventListener(
-            "resize",
-            function () {
-
-                clearTimeout(
-                    resizeTimer
-                );
-
-
-                resizeTimer =
-                    setTimeout(
-                        function () {
-
-                            if (
-                                players.length &&
-                                gameScreen.classList.contains(
-                                    "active"
-                                )
-                            ) {
-
-                                renderCompassDots();
-
-                            }
-
-                        },
-                        100
-                    );
-
-            }
-        );
-
-
-        /* =========================================================
-           SPIN
-        ========================================================= */
-
-        spinBtn.addEventListener(
-            "click",
-            startCompassSpin
-        );
-
-
-        function startCompassSpin() {
-
-            if (isSpinning) {
-                return;
-            }
-
-
-            isSpinning = true;
-
-            spinBtn.disabled = true;
-
-
-            document
-                .querySelectorAll(
-                    ".player-dot-wrapper"
-                )
-                .forEach(
-                    function (wrapper) {
-
-                        wrapper.classList.remove(
-                            "active"
-                        );
-
-                    }
-                );
-
-
-            const targetIndex =
-                Math.floor(
-                    Math.random() *
-                    players.length
-                );
-
-
-            const sliceAngle =
-                360 /
-                players.length;
-
-
-            const targetPlayerAngle =
-                targetIndex *
-                sliceAngle;
-
-
-            const extraSpins =
-                360 * 5;
-
-
-            const normalizedCurrent =
-                (
-                    currentRotation %
-                    360
-                );
-
-
-            const distance =
-                (
-                    targetPlayerAngle -
-                    normalizedCurrent +
-                    360
-                ) % 360;
-
-
-            currentRotation +=
-                extraSpins +
-                distance;
-
-
-            if (spinEffectEnabled) {
-
-                compassNeedle.style.transition =
-                    "transform 3s cubic-bezier(0.15, 0.9, 0.2, 1)";
-
-
-                compassNeedle.style.transform =
-                    `rotate(${currentRotation}deg)`;
-
-            } else {
-
-                compassNeedle.style.transition =
-                    "none";
-
-
-                compassNeedle.style.transform =
-                    `rotate(${currentRotation}deg)`;
-
-            }
-
-
-            vibrate(
-                [50, 50, 50]
-            );
-
-
-            const spinDuration =
-                spinEffectEnabled
-                    ? 3000
-                    : 150;
-
-
-            setTimeout(
-                function () {
-
-                    isSpinning = false;
-
-                    spinBtn.disabled = false;
-
-
-                    const activeWrapper =
-                        document.getElementById(
-                            `player-wrapper-${targetIndex}`
-                        );
-
-
-                    if (activeWrapper) {
-
-                        activeWrapper.classList.add(
-                            "active"
-                        );
-
-                    }
-
-
-                    if (effectsEnabled) {
-
-                        vibrate(100);
-
-                    }
-
-
-                    setTimeout(
-                        function () {
-
-                            showChoicesDialog(
-                                `Player ${targetIndex + 1}`
-                            );
-
-                        },
-                        effectsEnabled
-                            ? 400
-                            : 0
-                    );
-
-
-                },
-                spinDuration
-            );
-
-        }
-
-
-        /* =========================================================
-           CHOICE MODAL
-        ========================================================= */
-
-        function showChoicesDialog(
-            playerName
-        ) {
-
-            modalPlayerName.textContent =
-                playerName;
-
-
-            choiceModal.classList.add(
-                "open"
-            );
-
-        }
-
-
-        chooseTruthBtn.onclick =
-            function () {
-
-                choiceModal.classList.remove(
-                    "open"
-                );
-
-
-                const content =
-                    getGameContent(
-                        unusedTruths,
-                        gameContent[
-                            selectedDifficulty
-                        ].truths
-                    );
-
-
-                showOutcomeDialog(
-                    "Truth",
-                    content
-                );
-
-            };
-
-
-        chooseDareBtn.onclick =
-            function () {
-
-                choiceModal.classList.remove(
-                    "open"
-                );
-
-
-                const content =
-                    getGameContent(
-                        unusedDares,
-                        gameContent[
-                            selectedDifficulty
-                        ].dares
-                    );
-
-
-                showOutcomeDialog(
-                    "Dare",
-                    content
-                );
-
-            };
-
-
-        /* =========================================================
-           OUTCOME MODAL
-        ========================================================= */
-
-        function showOutcomeDialog(
-            type,
-            content
-        ) {
-
-            outcomeTitle.textContent =
-                type.toUpperCase();
-
-
-            outcomeTitle.style.color =
-                type === "Truth"
-                    ? "#38BDF8"
-                    : "#2DD4BF";
-
-
-            outcomeText.textContent =
-                content;
-
-
-            outcomeModal.classList.add(
-                "open"
-            );
-
-
-            if (effectsEnabled) {
-
-                vibrate(60);
-
-            }
-
-        }
-
-
-        /* =========================================================
-           NEXT SPIN
-        ========================================================= */
-
-        nextSpinBtn.onclick =
-            function () {
-
-                outcomeModal.classList.remove(
-                    "open"
-                );
-
-
-                document
-                    .querySelectorAll(
-                        ".player-dot-wrapper"
-                    )
-                    .forEach(
-                        function (wrapper) {
-
-                            wrapper.classList.remove(
-                                "active"
-                            );
-
-                        }
-                    );
-
-            };
-
-
-        /* =========================================================
-           ESCAPE KEY
-           Useful on desktop
-        ========================================================= */
-
-        document.addEventListener(
-            "keydown",
-            function (event) {
-
-                if (
-                    event.key !== "Escape"
-                ) {
-                    return;
-                }
-
-
-                if (
-                    choiceModal.classList.contains(
-                        "open"
-                    )
-                ) {
-
-                    choiceModal.classList.remove(
-                        "open"
-                    );
-
-                    return;
-
-                }
-
-
-                if (
-                    outcomeModal.classList.contains(
-                        "open"
-                    )
-                ) {
-
-                    outcomeModal.classList.remove(
-                        "open"
-                    );
-
-                }
-
-            }
-        );
-
-    </script>
+</script>
 
 </body>
-
 </html>
